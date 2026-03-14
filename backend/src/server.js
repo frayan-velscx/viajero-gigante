@@ -46,7 +46,33 @@ app.get('/api/health', (req, res) => {
 // ── Iniciar servidor ──────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
-    console.log(`📁 Uploads disponibles en: http://localhost:${PORT}/uploads`);
-    console.log(`📸 Foto de perfil en:      http://localhost:${PORT}/api/users/photo`);
+    const env  = process.env.NODE_ENV || 'development';
+    const now  = new Date().toLocaleString('es-CO', {
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+    });
+    const line = '─'.repeat(50);
+
+    console.log(`
+╔${'═'.repeat(50)}╗
+║${'          🌍  GIGANTE VIAJERO  —  API          '}║
+╚${'═'.repeat(50)}╝
+  Entorno  ›  ${env.padEnd(16)}Puerto  ›  ${PORT}
+  Inicio   ›  ${now}
+
+  Servicios
+  ├─ ✅  Firebase        activo
+  ├─ ✅  Email (Resend)  configurado
+  ├─ ✅  Uploads         /uploads
+  └─ ⏳  MongoDB         conectando...
+
+  Rutas
+  ├─ /api/auth       /api/sitios    /api/Bookings
+  ├─ /api/reviews    /api/users     /api/chat
+  └─ /api/health
+
+${line}
+  🚀  http://localhost:${PORT}
+${line}
+`)
 });

@@ -12,22 +12,23 @@ const createTransport = () => {
     try {
 
         // Verificar variables de entorno
-        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-            throw new Error('❌ Faltan credenciales EMAIL_USER o EMAIL_PASS en el .env');
+        if (!process.env.RESEND_API_KEY) {
+            throw new Error('❌ Falta RESEND_API_KEY en el .env');
         }
 
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: 'smtp.resend.com',
+            port: 465,
+            secure: true,
             auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            },
-            secure: true
+                user: 'resend',
+                pass: process.env.RESEND_API_KEY
+            }
         });
 
         logger.info('✅ Transporte de email configurado', {
-            service: 'gmail',
-            user: process.env.EMAIL_USER
+            service: 'Resend',
+            from: process.env.EMAIL_FROM
         });
 
         return transporter;
@@ -53,8 +54,6 @@ const verifyEmailConfig = async () => {
         await transporter.verify();
 
         logger.info('✅ Servidor de correo listo');
-        console.log('📧 Servidor de email conectado');
-        console.log(`👤 Cuenta: ${process.env.EMAIL_USER}`);
 
         return true;
 
@@ -62,10 +61,7 @@ const verifyEmailConfig = async () => {
 
         logger.error('❌ Error verificando email:', error);
 
-        console.log('\n⚠️  Configuración de Gmail requerida:');
-        console.log('1️⃣ Activar verificación en 2 pasos');
-        console.log('2️⃣ Crear contraseña de aplicación');
-        console.log('3️⃣ Colocarla en EMAIL_PASS del .env\n');
+        console.error('  ❌  Email (Resend)  ›  Verificación SMTP fallida');
 
         return false;
     }
@@ -82,7 +78,7 @@ const sendEmail = async (mailOptions) => {
         if (!mailOptions.from) {
             mailOptions.from = {
                 name: 'Gigante Viajero',
-                address: process.env.EMAIL_USER
+                address: process.env.EMAIL_FROM || 'onboarding@resend.dev'
             };
         }
 
@@ -119,7 +115,7 @@ const sendEmailWithAttachments = async (to, subject, html, attachments = []) => 
     const mailOptions = {
         from: {
             name: 'Gigante Viajero',
-            address: process.env.EMAIL_USER
+            address: process.env.EMAIL_FROM || 'onboarding@resend.dev'
         },
         to,
         subject,

@@ -6,7 +6,6 @@
 const User = require('../models/User');
 const logger = require('../config/logger');
 
-console.log('🔐 Inicializando controlador de autenticación');
 
 
 // =============================================
@@ -407,9 +406,3 @@ module.exports = {
     updateProfile
 };
 
-console.log('✅ Controlador de autenticación exportado');
-console.log('📋 Funciones disponibles:');
-console.log('   • register - Crear nueva cuenta');
-console.log('   • login - Autenticar usuario');
-console.log('   • getProfile - Obtener perfil');
-console.log('   • updateProfile - Actualizar perfil ✨ CORREGIDO');

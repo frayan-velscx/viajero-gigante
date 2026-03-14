@@ -21,7 +21,6 @@ if (!admin.apps.length) {
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount)
     });
-    console.log('✅ Firebase Admin SDK inicializado — proyecto: gigante-viajero-55fef');
 }
 
 module.exports = admin;

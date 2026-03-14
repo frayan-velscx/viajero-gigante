@@ -2,7 +2,6 @@
 
 const { body, validationResult } = require('express-validator');
 
-console.log('🔍 Inicializando validadores de autenticación');
 
 // =====================================================
 // REGLAS DE VALIDACIÓN PARA REGISTRO
@@ -166,9 +165,3 @@ module.exports = {
     handleValidationErrors
 };
 
-console.log('✅ Validadores de autenticación exportados');
-console.log('📋 Validaciones disponibles:');
-console.log('   • registerValidation - Para registro de usuarios');
-console.log('   • loginValidation - Para login');
-console.log('   • updateProfileValidation - Para actualizar perfil');
-console.log('   • handleValidationErrors - Middleware de manejo de errores');

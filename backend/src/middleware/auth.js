@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const admin = require('../config/firebase');
 
-console.log('🔐 Inicializando middleware de autenticación');
 
 // =============================================
 // MIDDLEWARE: PROTECT - VERIFICAR TOKEN JWT O FIREBASE
@@ -270,10 +269,6 @@ const authorize = (...roles) => {
 
 module.exports = { protect, authorize };
 
-console.log('✅ Middleware de autenticación exportado');
-console.log('🔐 Funciones disponibles:');
-console.log('   • protect   - Verifica JWT propio O token de Firebase/Google');
-console.log('   • authorize - Verifica roles de usuario');
 
 /**
  * EJEMPLO DE USO EN RUTAS:

@@ -145,9 +145,3 @@ errorFileTransport.on('rotate', (oldFilename, newFilename) => {
 
 module.exports = logger;
 
-console.log('✅ Logger Winston configurado');
-console.log('   📁 Logs en carpeta: logs/');
-console.log('   📄 error-YYYY-MM-DD.log - Solo errores');
-console.log('   📄 combined-YYYY-MM-DD.log - Todos los logs');
-console.log('   📄 http-YYYY-MM-DD.log - Peticiones HTTP');
-console.log('   📄 audit-YYYY-MM-DD.log - Auditoría');

@@ -23,7 +23,6 @@ const { register, login, getProfile, updateProfile } = require('../controllers/a
 
 const User = require('../models/User');
 
-console.log('🔐 Inicializando rutas de autenticación');
 
 // =============================================
 // NODEMAILER TRANSPORTER
@@ -346,14 +345,5 @@ router.post('/reset-password', async (req, res) => {
 // LOG DE RUTAS CONFIGURADAS
 // =============================================
 
-console.log('✅ Rutas de autenticación configuradas:');
-console.log('   📝 POST /api/auth/register          - Crear cuenta');
-console.log('   🔐 POST /api/auth/login             - Iniciar sesión');
-console.log('   🔥 POST /api/auth/google            - Login con Google → MongoDB');
-console.log('   👤 GET  /api/auth/profile           - Ver perfil');
-console.log('   ✏️  PUT  /api/auth/profile           - Actualizar perfil');
-console.log('   📨 POST /api/auth/send-reset-code   - Enviar código');
-console.log('   🔢 POST /api/auth/verify-reset-code - Verificar código');
-console.log('   🔑 POST /api/auth/reset-password    - Cambiar contraseña');
 
 module.exports = router;

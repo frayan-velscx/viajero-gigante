@@ -10,25 +10,15 @@ const mongoose = require('mongoose');
  */
 const connectDB = async () => {
     try {
-        console.log('🔄 Intentando conectar a MongoDB Atlas...');
-        
-        // Opciones de conexión optimizadas
-        const options = {            
-            maxPoolSize: 10,            // Máximo 10 conexiones simultáneas
-            serverSelectionTimeoutMS: 5000, // Timeout de 5 segundos
-            socketTimeoutMS: 45000,     // Timeout de socket de 45 segundos
-            family: 4                   // Usar IPv4
+        const options = {
+            maxPoolSize: 10,
+            serverSelectionTimeoutMS: 5000,
+            socketTimeoutMS: 45000,
+            family: 4
         };
 
-        // Realizar la conexión
         const conn = await mongoose.connect(process.env.MONGODB_URI, options);
-        
-        // Mostrar información de éxito
-        console.log('✅ MongoDB Atlas conectado exitosamente');
-        console.log(`📍 Host: ${conn.connection.host}`);
-        console.log(`🗃️  Base de datos: ${conn.connection.name}`);
-        console.log(`🔌 Puerto: ${conn.connection.port}`);
-        
+        console.log(`  ✅  MongoDB   ›  ${conn.connection.name}  [conectado]`);
         return conn;
         
     } catch (error) {
@@ -78,25 +68,12 @@ const closeDB = async () => {
 // EVENTOS DE CONEXIÓN PARA MONITOREO
 // =============================================
 
-mongoose.connection.on('connected', () => {
-    console.log('🔗 Mongoose conectado a MongoDB Atlas');
-});
+mongoose.connection.on('error',      (err) => console.error('  ❌  MongoDB   ›  Error:', err.message));
+mongoose.connection.on('disconnected', ()  => console.log ('  ⚠️   MongoDB   ›  desconectado'));
+mongoose.connection.on('reconnected',  ()  => console.log ('  ✅  MongoDB   ›  reconectado'));
 
-mongoose.connection.on('error', (err) => {
-    console.error('❌ Error de conexión Mongoose:', err.message);
-});
-
-mongoose.connection.on('disconnected', () => {
-    console.log('🔌 Mongoose desconectado de MongoDB Atlas');
-});
-
-mongoose.connection.on('reconnected', () => {
-    console.log('🔄 Mongoose reconectado a MongoDB Atlas');
-});
-
-// Cerrar conexión cuando la app termina
 process.on('SIGINT', async () => {
-    console.log('\n🛑 Cerrando aplicación...');
+    console.log('\n  Cerrando servidor...');
     await closeDB();
     process.exit(0);
 });
