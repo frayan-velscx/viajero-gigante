@@ -12,7 +12,7 @@ const {
     createSitio,
     updateSitio,
     deleteSitio
-} = require('../controllers/Sitiocontroller');
+} = require('../controllers/sitiocontroller');
 
 // ── Rutas de lectura ─────────────────────────────────────────────
 
