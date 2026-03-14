@@ -121,7 +121,7 @@ async function sendConfirmationEmail(bookingData) {
             <div style="border-top:2px solid #f3f4f6;padding-top:20px;text-align:center;">
               <p style="font-size:13px;color:#6b7280;margin:0 0 6px;">
                 ¿Tienes dudas? Escríbenos a
-                <a href="mailto:${process.env.EMAIL_USER}" style="color:#195C33;font-weight:600;">${process.env.EMAIL_USER}</a>
+                <a href="mailto:${process.env.EMAIL_FROM}" style="color:#195C33;font-weight:600;">${process.env.EMAIL_FROM}</a>
               </p>
               <p style="font-size:12px;color:#9ca3af;margin:0;">
                 © 2025 Gigante Viajero · Gigante, Huila<br>
@@ -132,7 +132,7 @@ async function sendConfirmationEmail(bookingData) {
         </div>`;
 
         await transporter.sendMail({
-            from:    `"Gigante Viajero" <${process.env.EMAIL_USER}>`,
+            from:    `"Gigante Viajero" <${process.env.EMAIL_FROM}>`,
             to:      personalInfo.email,
             subject: `✅ Reserva ${bookingCode} — ${destination?.name} | Gigante Viajero`,
             html
@@ -199,7 +199,7 @@ async function sendItineraryEmail(bookingData, itinerary) {
         </div>`;
 
         await transporter.sendMail({
-            from:    `"Gigante Viajero" <${process.env.EMAIL_USER}>`,
+            from:    `"Gigante Viajero" <${process.env.EMAIL_FROM}>`,
             to:      personalInfo.email,
             subject: `🗺️ Tu itinerario para ${destination?.name} — ${bookingCode}`,
             html
