@@ -6,7 +6,7 @@
 const express    = require('express');
 const router     = express.Router();
 const bcrypt     = require('bcrypt');
-const nodemailer = require('nodemailer');
+const { transporter } = require('../config/Nodemailer');
 const admin      = require('../config/firebase');
 
 const { authLimiter } = require('../middleware/rateLimiter');
@@ -29,13 +29,6 @@ console.log('🔐 Inicializando rutas de autenticación');
 // NODEMAILER TRANSPORTER
 // =============================================
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS
-    }
-});
 
 // =============================================
 // STORE DE CÓDIGOS EN MEMORIA
