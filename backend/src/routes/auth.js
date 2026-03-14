@@ -326,7 +326,7 @@ router.post('/reset-password', async (req, res) => {
 
         await User.findOneAndUpdate(
             { email },
-            { $set: { password: hashedPassword } },
+            { $set: { password: hashedPassword, authProvider: 'local' } },
             { new: true }
         );
 
