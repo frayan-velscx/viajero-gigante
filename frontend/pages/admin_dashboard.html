@@ -6,8 +6,37 @@
     <title>Panel Administrativo - Gigante Viajero</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="../styles/admin-dashboard.css">
-    <link rel="stylesheet" href="../styles/admin-dashboard-extras.css">
+    <link rel="stylesheet" href="../styles/admin-dashboard-mobile.css">
+    <link rel="stylesheet" href="../styles/admin-dashboard.css"> 
+   <link rel="stylesheet" href="../styles/admin-dashboard-extras.css">
+
+   
+<style id="gv-admin-responsive">
+:root{--verde:#195C33;}
+@media(max-width:1024px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .charts-row{flex-direction:column!important;}
+  .charts-row>*{flex:none!important;width:100%!important;}
+}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);position:fixed;z-index:9999;height:100vh;transition:transform .3s;}
+  .sidebar.mobile-open{transform:translateX(0)!important;}
+  .main-content{margin-left:0!important;width:100%!important;}
+  .top-header{padding:12px 16px;}
+  .search-box{display:none!important;}
+  .stats-grid{grid-template-columns:1fr 1fr!important;gap:12px;}
+  .stat-card{padding:14px!important;}
+  .stat-value{font-size:1.4rem!important;}
+  .content-wrapper{padding:12px!important;}
+  .page-title{font-size:1.1rem;}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr!important;}
+  .user-name{display:none!important;}
+}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998;}
+.sidebar-overlay.show{display:block;}
+</style>
 </head>
 <body>
 
@@ -838,5 +867,18 @@
     </script>
     <script src="../scripts/photo-sync.js"></script>
     <script src="../scripts/admin-photo.js"></script>
+    <script src="../scripts/admin-mobile.js"></script>
+<script>
+(function(){
+  var ov=document.createElement('div');
+  ov.className='sidebar-overlay';document.body.appendChild(ov);
+  var sb=document.querySelector('.sidebar');
+  var mb=document.getElementById('mobileMenuToggle')||document.querySelector('.mobile-menu-toggle');
+  if(mb&&sb){
+    mb.addEventListener('click',function(){sb.classList.toggle('mobile-open');ov.classList.toggle('show');});
+    ov.addEventListener('click',function(){sb.classList.remove('mobile-open');ov.classList.remove('show');});
+  }
+})();
+</script>
 </body>
 </html>

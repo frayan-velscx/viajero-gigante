@@ -1,0 +1,381 @@
+/* ================================================================
+   admin-dashboard-mobile.css — Gigante Viajero
+   Responsividad completa del panel administrativo
+   Pegar ÚLTIMO en el <head>, después de los otros CSS del dashboard
+   ================================================================ */
+
+/* ── Variables ───────────────────────────────────────────────── */
+:root {
+  --sidebar-w: 280px;
+  --header-h:  70px;
+  --mobile-bottom-h: 64px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TABLET  ≤ 1024px
+══════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+
+  /* Sidebar colapsado por defecto */
+  .sidebar { width: 72px !important; }
+  .sidebar .sidebar-title,
+  .sidebar .nav-item span:not(.badge),
+  .sidebar .admin-info,
+  .sidebar .btn-volver-inicio span,
+  .sidebar .btn-logout span { opacity: 0; pointer-events: none; width: 0; overflow: hidden; }
+
+  .main-content { margin-left: 72px !important; }
+
+  /* Grids */
+  .stats-grid       { grid-template-columns: repeat(2, 1fr) !important; }
+  .charts-row       { flex-direction: column !important; }
+  .charts-row > *   { flex: none !important; width: 100% !important; }
+  .reviews-grid     { grid-template-columns: 1fr !important; }
+  .settings-container,
+  .destinations-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MÓVIL  ≤ 768px
+══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── SIDEBAR: drawer lateral ────────────────────────────── */
+  .sidebar {
+    position: fixed !important;
+    left: 0 !important; top: 0 !important;
+    width: var(--sidebar-w) !important;
+    height: 100dvh !important;
+    transform: translateX(-110%) !important;
+    z-index: 9999 !important;
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1) !important;
+    box-shadow: 4px 0 24px rgba(0,0,0,.25) !important;
+  }
+  .sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+  /* Restaurar texto dentro del drawer */
+  .sidebar .sidebar-title        { opacity: 1 !important; pointer-events: auto !important; width: auto !important; overflow: visible !important; }
+  .sidebar .nav-item span        { opacity: 1 !important; pointer-events: auto !important; width: auto !important; overflow: visible !important; }
+  .sidebar .admin-info           { display: flex !important; }
+  .sidebar .btn-volver-inicio span,
+  .sidebar .btn-logout span      { opacity: 1 !important; width: auto !important; overflow: visible !important; }
+
+  /* Overlay */
+  .sidebar-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 9998;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+  .sidebar-overlay.show { display: block; }
+
+  /* ── MAIN: ocupa todo el ancho ──────────────────────────── */
+  .main-content { margin-left: 0 !important; padding-bottom: var(--mobile-bottom-h) !important; }
+
+  /* ── TOP HEADER ─────────────────────────────────────────── */
+  .top-header {
+    padding: 0 16px !important;
+    height: 56px !important;
+    gap: 12px;
+  }
+  .search-box        { display: none !important; }
+  .page-title        { font-size: 16px !important; }
+  .user-name         { display: none !important; }
+  .mobile-menu-toggle {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── CONTENT WRAPPER ────────────────────────────────────── */
+  .content-wrapper { padding: 16px !important; }
+
+  /* ── STATS GRID ─────────────────────────────────────────── */
+  .stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    margin-bottom: 20px !important;
+  }
+  .stat-card {
+    padding: 16px 14px !important;
+    gap: 12px !important;
+    border-radius: 14px !important;
+  }
+  .stat-icon {
+    width: 48px !important; height: 48px !important;
+    font-size: 20px !important;
+    border-radius: 12px !important;
+  }
+  .stat-value  { font-size: 22px !important; }
+  .stat-label  { font-size: 12px !important; }
+  .stat-change { font-size: 11px !important; }
+
+  /* ── DASHBOARD TOPBAR ───────────────────────────────────── */
+  .dash-topbar {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 14px 16px !important;
+    gap: 12px !important;
+    margin-bottom: 16px !important;
+  }
+  .dash-period-tabs {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .period-tab-group { flex: 1; }
+  .period-tab { padding: 6px 10px !important; font-size: 12px !important; }
+
+  /* ── CHARTS ─────────────────────────────────────────────── */
+  .charts-row {
+    flex-direction: column !important;
+    gap: 16px !important;
+    margin-bottom: 20px !important;
+  }
+  .charts-row > * { flex: none !important; width: 100% !important; }
+  .chart-card {
+    padding: 18px 16px !important;
+    border-radius: 14px !important;
+  }
+  .chart-header { margin-bottom: 14px !important; }
+  .chart-header h3 { font-size: 14px !important; }
+
+  /* ── SECTION HEADER ─────────────────────────────────────── */
+  .section-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    margin-bottom: 16px !important;
+  }
+  .section-header h2 { font-size: 17px !important; }
+  .section-actions { width: 100%; }
+
+  /* ── FILTROS RESERVAS ───────────────────────────────────── */
+  .filter-group {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+  .filter-select,
+  .filter-input { width: 100% !important; font-size: 14px !important; }
+  .filter-date-group { width: 100% !important; justify-content: space-between; }
+  .btn-clear-filters { width: 100% !important; justify-content: center; }
+  .section-actions .btn-primary { width: 100% !important; justify-content: center; }
+
+  /* ── TABLA RESERVAS ─────────────────────────────────────── */
+  .table-container {
+    border-radius: 14px !important;
+    overflow-x: auto !important;
+  }
+  .data-table {
+    min-width: 900px;
+    font-size: 12px !important;
+  }
+  .data-table th { padding: 12px 10px !important; font-size: 11px !important; }
+  .data-table td { padding: 12px 10px !important; }
+  .action-btn { width: 28px !important; height: 28px !important; font-size: 12px !important; }
+
+  /* ── DESTINOS ───────────────────────────────────────────── */
+  .dest-toolbar {
+    flex-direction: column !important;
+    gap: 10px !important;
+    padding: 12px !important;
+  }
+  .dest-search-wrap { width: 100% !important; }
+  .dest-filter-group {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 6px !important;
+  }
+  .dest-filter-btn { justify-content: center; font-size: 11px !important; padding: 7px 8px !important; }
+  .destinations-grid { grid-template-columns: 1fr !important; }
+
+  /* ── REVIEWS ────────────────────────────────────────────── */
+  .reviews-stats-bar  { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+  .reviews-grid       { grid-template-columns: 1fr !important; }
+  .reviews-toolbar {
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 12px !important;
+  }
+  .reviews-search-wrap,
+  .reviews-filter-select,
+  .reviews-date-range { width: 100% !important; }
+
+  /* ── USUARIOS ───────────────────────────────────────────── */
+  #searchUsers { width: 100% !important; }
+  #btnAddUser  { width: 100% !important; justify-content: center; }
+
+  /* ── ANALYTICS ──────────────────────────────────────────── */
+  .analytics-header  { flex-direction: column !important; gap: 14px !important; }
+  .analytics-date-bar {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 8px !important;
+    padding: 12px !important;
+  }
+  .analytics-date-field input,
+  .analytics-quick-select { width: 100% !important; }
+  .analytics-date-sep { display: none; }
+  #btnApplyAnalytics,
+  #btnResetAnalytics { width: 100% !important; justify-content: center; }
+  #analyticsKpis { grid-template-columns: 1fr 1fr !important; }
+
+  /* ── REPORTES ───────────────────────────────────────────── */
+  .report-type-card { padding: 14px !important; }
+  .report-card-icon { width: 40px !important; height: 40px !important; font-size: 16px !important; }
+
+  /* ── CONFIGURACIÓN ──────────────────────────────────────── */
+  .settings-container { grid-template-columns: 1fr !important; gap: 14px !important; }
+  .settings-group { padding: 18px !important; }
+
+  /* ── MODALES ────────────────────────────────────────────── */
+  .modal { padding: 12px !important; align-items: flex-end !important; }
+  .modal-content {
+    border-radius: 20px 20px 0 0 !important;
+    max-height: 90dvh !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .modal-header { padding: 18px 20px !important; }
+  .modal-header h2 { font-size: 17px !important; }
+  .modal-body { padding: 18px 20px !important; }
+  .form-row { grid-template-columns: 1fr !important; }
+
+  /* ── BOTTOM NAV MÓVIL ───────────────────────────────────── */
+  .mobile-bottom-nav {
+    display: flex !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MÓVIL PEQUEÑO  ≤ 480px
+══════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+
+  .stats-grid { grid-template-columns: 1fr !important; }
+  #analyticsKpis { grid-template-columns: 1fr !important; }
+
+  .stat-card {
+    flex-direction: row !important;
+    align-items: center !important;
+  }
+  .stat-icon { width: 44px !important; height: 44px !important; flex-shrink: 0; }
+  .stat-value { font-size: 20px !important; }
+
+  .dest-filter-group { grid-template-columns: 1fr 1fr !important; }
+
+  .reviews-stats-bar { grid-template-columns: 1fr 1fr !important; }
+
+  .content-wrapper { padding: 12px !important; }
+
+  .chart-header h3 { font-size: 13px !important; }
+  .chart-card { padding: 14px 12px !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BOTTOM NAVIGATION — barra inferior en móvil
+══════════════════════════════════════════════════════════════ */
+.mobile-bottom-nav {
+  display: none; /* solo se muestra en móvil */
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: var(--mobile-bottom-h);
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -4px 20px rgba(0,0,0,.08);
+  z-index: 999;
+  padding: 0 4px;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background .2s;
+  flex: 1;
+  position: relative;
+  color: #9ca3af;
+  font-family: 'Inter', sans-serif;
+}
+.mobile-nav-item:active { background: #f3f4f6; }
+.mobile-nav-item.active { color: #195C33; }
+.mobile-nav-item i { font-size: 18px; }
+.mobile-nav-item span { font-size: 10px; font-weight: 600; white-space: nowrap; }
+.mobile-nav-badge {
+  position: absolute;
+  top: 4px; right: 12px;
+  width: 16px; height: 16px;
+  background: #ef4444;
+  color: white;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid white;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   UTILIDADES EXTRA PARA MÓVIL
+══════════════════════════════════════════════════════════════ */
+
+/* Cards en lista en móvil */
+@media (max-width: 768px) {
+  .destination-card {
+    border-radius: 14px !important;
+  }
+  .destination-image { height: 160px !important; }
+  .destination-content { padding: 14px !important; }
+  .destination-price { font-size: 20px !important; }
+
+  .review-card { padding: 16px !important; }
+  .review-body { font-size: 13px !important; padding: 10px 12px !important; }
+
+  .notifications-panel {
+    width: 100% !important;
+    border-radius: 20px 20px 0 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+    max-height: 85dvh !important;
+  }
+  .notifications-panel.active { right: 0 !important; }
+
+  .notification-toast {
+    left: 12px !important;
+    right: 12px !important;
+    max-width: none !important;
+    bottom: calc(var(--mobile-bottom-h) + 12px) !important;
+  }
+
+  /* Pagination más compacta */
+  .pagination button,
+  .reviews-pagination button {
+    width: 32px !important; height: 32px !important;
+    font-size: 12px !important;
+  }
+
+  /* Sidebar toggle visible */
+  .sidebar-toggle { display: none !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   REDUCIR MOVIMIENTO
+══════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar, .notifications-panel, .modal-content {
+    transition: none !important;
+    animation: none !important;
+  }
+}

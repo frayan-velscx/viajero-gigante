@@ -6,6 +6,7 @@
     <title>Realizar Reserva - Gigante Viajero</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+     <link rel="stylesheet" href="../styles/turibot-responsive-fix.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #ffffff; }
@@ -214,77 +215,569 @@
             .reservation-form, .reservation-summary { padding:28px 20px; }
             .modal-buttons { flex-direction:column; }
         }
-    </style>
+    
+    /* ═══ FOOTER UNIFICADO ═════════════════════════════════════════════════ */
+    footer {
+      background: linear-gradient(135deg, #195C33 0%, #0d3d20 100%);
+      color: white; position: relative; overflow: hidden;
+    }
+    footer::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, #F4C400, #FFE347, #F4C400);
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: clamp(40px,6vw,64px) clamp(20px,5vw,48px) clamp(20px,4vw,36px);
+    }
+    .footer-top {
+      display: grid; grid-template-columns: 1fr auto;
+      gap: clamp(24px,4vw,48px); align-items: start; margin-bottom: 32px;
+    }
+    .footer-brand h2 {
+      font-family: 'Playfair Display', 'Georgia', serif;
+      font-size: clamp(22px,4vw,32px); color: #F4C400; margin-bottom: 12px;
+    }
+    .footer-brand p {
+      color: rgba(255,255,255,0.8);
+      font-size: clamp(14px,2vw,16px); line-height: 1.7; max-width: 460px;
+    }
+    .footer-social { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .social-link {
+      width: 46px; height: 46px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 19px; text-decoration: none; color: white;
+      border: 2px solid rgba(255,255,255,0.2);
+      transition: all 0.35s; box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    }
+    .social-link:hover {
+      transform: translateY(-5px) scale(1.08);
+      border-color: #F4C400; box-shadow: 0 8px 22px rgba(244,196,0,0.4);
+    }
+    .sf { background: linear-gradient(135deg, #1877F2, #0d5dbf); }
+    .si { background: linear-gradient(135deg, #E1306C, #833AB4); }
+    .st { background: linear-gradient(135deg, #000, #333); }
+    .sx { background: linear-gradient(135deg, #000, #1a1a1a); }
+    .footer-divider {
+      height: 1px; margin-bottom: 28px;
+      background: linear-gradient(90deg,transparent,rgba(244,196,0,0.7) 30%,rgba(244,196,0,0.9) 50%,rgba(244,196,0,0.7) 70%,transparent);
+    }
+    .footer-contact {
+      display: flex; gap: clamp(20px,4vw,48px);
+      flex-wrap: wrap; justify-content: center; margin-bottom: 28px;
+    }
+    .contact-item {
+      display: flex; align-items: center; gap: 10px;
+      color: rgba(255,255,255,0.85); font-size: 14px;
+      transition: all 0.25s; text-decoration: none;
+    }
+    .contact-item:hover { color: #F4C400; transform: translateX(4px); }
+    .contact-item i { color: #F4C400; font-size: 17px; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding-top: 18px; text-align: center;
+    }
+    .footer-bottom p { color: rgba(255,255,255,0.6); font-size: 13px; }
+    @media(max-width:768px){
+      .footer-top { grid-template-columns: 1fr; }
+      .footer-social { margin-top: 16px; }
+      .footer-contact { flex-direction: column; align-items: center; gap: 14px; }
+    }
+    @media(max-width:480px){
+      .footer-brand p { max-width: 100%; }
+      .social-link { width: 42px; height: 42px; font-size: 17px; }
+    }
+
+    
+    /* ═══ BOTONES FLOTANTES ════════════════════════════════════════════════ */
+
+    /* WhatsApp */
+    .whatsapp-btn {
+      position: fixed;
+      bottom: 100px;
+      right: 24px;
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 10000;
+      box-shadow: 0 6px 20px rgba(37,211,102,0.5);
+      transition: all 0.3s; text-decoration: none;
+    }
+    .whatsapp-btn:hover { transform: scale(1.12); box-shadow: 0 10px 28px rgba(37,211,102,0.7); }
+    .whatsapp-btn svg { width: 28px; height: 28px; fill: white; flex-shrink:0; }
+    .whatsapp-btn::before {
+      content: 'WhatsApp';
+      position: absolute; right: calc(100% + 10px);
+      background: #1f2937; color: white;
+      font-size: 12px; font-weight: 600;
+      padding: 6px 12px; border-radius: 8px;
+      white-space: nowrap; opacity: 0;
+      pointer-events: none; transition: opacity 0.2s;
+    }
+    .whatsapp-btn:hover::before { opacity: 1; }
+
+    /* TuriBot toggle pill */
+    .turibot-toggle {
+      position: fixed;
+      bottom: 32px;
+      right: 24px;
+      height: 44px; padding: 0 18px 0 12px;
+      background: linear-gradient(135deg, #195C33, #0d3d20);
+      border-radius: 999px;
+      cursor: pointer; z-index: 10000;
+      box-shadow: 0 6px 20px rgba(25,92,51,0.5);
+      display: flex; align-items: center; gap: 8px;
+      transition: all 0.3s; border: none;
+    }
+    .turibot-toggle span {
+      color: white; font-size: 13px; font-weight: 600; white-space: nowrap;
+    }
+    .turibot-toggle:hover {
+      box-shadow: 0 10px 28px rgba(25,92,51,0.65);
+      background: linear-gradient(135deg, #0d3d20, #051f10);
+    }
+
+    /* TuriBot chat window */
+    .turibot-container {
+      display: none; flex-direction: column;
+      position: fixed;
+      bottom: 90px;
+      right: 24px;
+      width: min(360px, calc(100vw - 32px));
+      height: min(520px, calc(100svh - 120px));
+      background: white; border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      z-index: 10001; overflow: hidden;
+      border: 1px solid rgba(25,92,51,0.12);
+      animation: botAppear 0.3s ease;
+    }
+    @keyframes botAppear {
+      from { opacity:0; transform:translateY(16px) scale(0.95); }
+      to   { opacity:1; transform:translateY(0) scale(1); }
+    }
+    .turibot-header {
+      background: linear-gradient(135deg, #195C33, #0d3d20);
+      color: white; padding: 14px 16px;
+      font-weight: 700; font-size: 14px;
+      display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+    }
+    .turibot-header::before { content: '🤖'; font-size: 18px; }
+    .turibot-messages {
+      flex: 1; overflow-y: auto; padding: 14px;
+      display: flex; flex-direction: column; gap: 10px; background: #f9fafb;
+    }
+    .turibot-messages::-webkit-scrollbar { width: 4px; }
+    .turibot-messages::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+    .bot-msg {
+      background: white; color: #1f2937; padding: 10px 14px;
+      border-radius: 16px 16px 16px 4px;
+      font-size: 13.5px; line-height: 1.65; max-width: 90%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e5e7eb;
+    }
+    .user-msg {
+      background: linear-gradient(135deg, #195C33, #2e7d32);
+      color: white; padding: 10px 14px;
+      border-radius: 16px 16px 4px 16px;
+      font-size: 13.5px; line-height: 1.65; max-width: 80%; align-self: flex-end;
+    }
+    .loader { display:flex; gap:5px; align-items:center; padding:2px 0; }
+    .loader span { width:7px; height:7px; background:#195C33; border-radius:50%; animation:bounce 1.2s infinite ease-in-out; }
+    .loader span:nth-child(2){animation-delay:.2s;} .loader span:nth-child(3){animation-delay:.4s;}
+    @keyframes bounce{0%,80%,100%{transform:scale(0.6);opacity:.4} 40%{transform:scale(1);opacity:1}}
+    .turibot-input {
+      display: flex; padding: 10px; gap: 8px;
+      background: white; border-top: 1px solid #e5e7eb; flex-shrink: 0;
+    }
+    .turibot-input input {
+      flex: 1; padding: 9px 13px;
+      border: 1.5px solid #e5e7eb; border-radius: 30px;
+      font-size: 13.5px; outline: none; transition: border-color .2s; min-width:0;
+    }
+    .turibot-input input:focus { border-color: #195C33; }
+    .turibot-input button {
+      background: linear-gradient(135deg, #195C33, #0d3d20);
+      color: white; border: none; padding: 9px 16px;
+      border-radius: 30px; font-weight: 600; font-size: 13px;
+      cursor: pointer; transition: all .3s; white-space: nowrap; flex-shrink: 0;
+    }
+    .turibot-input button:hover {
+      background: linear-gradient(135deg, #F4C400, #FFE347); color: #0d3d20;
+    }
+    .quick-buttons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .quick-buttons button {
+      background: #f0f9f0; border: 1px solid #4caf50; border-radius: 16px;
+      padding: 5px 11px; font-size: 12px; cursor: pointer; color: #2e7d32;
+      transition: background .2s;
+    }
+    .quick-buttons button:hover { background: #4caf50; color: white; }
+
+    /* Btn volver */
+    .btn-volver {
+      position: fixed;
+      top: calc(72px + 16px); left: 16px;
+      width: 42px; height: 42px;
+      background: linear-gradient(135deg, #195C33, #2e7d32);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.18);
+      border: none; z-index: 9999; transition: all 0.3s; text-decoration: none;
+    }
+    .btn-volver:hover { transform: scale(1.1) translateX(-2px); }
+    .btn-volver svg { width:18px; height:18px; fill:none; stroke:white; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+
+    /* Mobile adjustments for floating buttons */
+    @media(max-width:480px){
+      .whatsapp-btn { bottom: 92px; right: 16px; width: 50px; height: 50px; }
+      .turibot-toggle { bottom: 28px; right: 16px; height: 40px; padding: 0 14px 0 10px; }
+      .turibot-toggle span { font-size: 12px; }
+      .turibot-container { right: 8px; width: calc(100vw - 16px); bottom: 80px; }
+      .whatsapp-btn::before { display: none; }
+    }
+
+</style>
+<style id="gv-header-responsive">
+/* ═══ GIGANTE VIAJERO — HEADER + RESPONSIVIDAD GLOBAL ════════════════════ */
+
+/* Variables */
+:root{
+  --verde:#195C33; --verde-dark:#0d3d20;
+  --amarillo:#F4C400; --amarillo-light:#FFE347;
+  --header-h:72px;
+}
+
+/* ── HEADER ─────────────────────────────────────────────────────────────── */
+header{
+  background:linear-gradient(135deg,var(--verde),var(--verde-dark)) !important;
+  box-shadow:0 2px 20px rgba(0,0,0,.15) !important;
+  position:sticky !important; top:0 !important; z-index:1000 !important;
+  height:var(--header-h) !important;
+}
+.header-container{max-width:1400px;margin:0 auto;padding:0 clamp(16px,4vw,32px);}
+.header-content{
+  display:flex !important; align-items:center !important;
+  justify-content:space-between !important;
+  height:var(--header-h) !important; gap:24px;
+}
+
+/* Logo */
+.logo-section,.logo-section a{
+  display:flex !important; align-items:center !important;
+  gap:10px; flex-shrink:0; text-decoration:none;
+}
+.logo-img{width:clamp(36px,5vw,52px) !important; height:clamp(36px,5vw,52px) !important; object-fit:contain;}
+.logo-text{color:#fff !important; font-size:clamp(15px,2.5vw,22px) !important; font-weight:700; white-space:nowrap;}
+
+/* Nav desktop */
+nav{display:flex !important; align-items:center;}
+.nav-menu{display:flex !important; align-items:center; gap:clamp(18px,2.5vw,32px); list-style:none; margin:0; padding:0;}
+.nav-link{color:rgba(255,255,255,.9) !important; text-decoration:none !important; font-weight:500; font-size:15px; padding:6px 0; position:relative; transition:color .25s; white-space:nowrap;}
+.nav-link:hover{color:var(--amarillo) !important;}
+.nav-link::after{content:''; position:absolute; bottom:0; left:0; width:0; height:2px; background:var(--amarillo); border-radius:2px; transition:width .3s;}
+.nav-link:hover::after{width:100%;}
+
+/* Dropdown */
+.dropdown{position:relative;}
+.dropdown-toggle{display:flex; align-items:center; gap:5px; cursor:pointer;}
+.dropdown-menu{
+  position:absolute; top:calc(100% + 14px); left:50%;
+  transform:translateX(-50%) translateY(-8px);
+  background:#fff; border-radius:12px;
+  box-shadow:0 12px 40px rgba(0,0,0,.15);
+  min-width:200px; opacity:0; visibility:hidden;
+  transition:all .25s; overflow:hidden; z-index:2000;
+}
+.dropdown:hover .dropdown-menu{opacity:1; visibility:visible; transform:translateX(-50%) translateY(0);}
+.dropdown-menu a{
+  display:flex; align-items:center; gap:10px;
+  padding:12px 18px; color:#1f2937 !important;
+  text-decoration:none; font-size:14px; font-weight:500;
+  border-left:3px solid transparent; transition:all .2s;
+}
+.dropdown-menu a:hover{background:#f3f4f6; border-left-color:var(--amarillo); color:var(--verde) !important; padding-left:22px;}
+
+/* Auth buttons */
+.auth-section{display:flex !important; align-items:center; gap:10px; flex-shrink:0;}
+.btn-login,.btn.btn-login{
+  color:#fff !important; background:transparent !important;
+  border:1.5px solid rgba(255,255,255,.5) !important;
+  padding:8px 18px; border-radius:30px; font-weight:600; font-size:14px;
+  text-decoration:none; transition:all .25s; white-space:nowrap; display:inline-block;
+}
+.btn-login:hover,.btn.btn-login:hover{background:#fff !important; color:var(--verde) !important;}
+.btn-register,.btn.btn-register{
+  background:linear-gradient(135deg,var(--amarillo),var(--amarillo-light)) !important;
+  color:var(--verde-dark) !important; padding:9px 20px; border-radius:30px;
+  font-weight:700; font-size:14px; text-decoration:none; transition:all .25s;
+  white-space:nowrap; box-shadow:0 4px 14px rgba(244,196,0,.35); display:inline-block;
+}
+.btn-register:hover,.btn.btn-register:hover{transform:translateY(-2px); box-shadow:0 8px 22px rgba(244,196,0,.5);}
+
+/* User menu */
+#user-menu-container{display:none; position:relative;}
+#user-menu-button{
+  display:flex; align-items:center; gap:8px; padding:7px 14px;
+  background:rgba(255,255,255,.1); border-radius:40px; cursor:pointer;
+  border:1.5px solid rgba(255,255,255,.2); transition:all .25s;
+}
+#user-menu-button:hover{background:rgba(255,255,255,.18);}
+#user-initials{
+  width:34px; height:34px; border-radius:50%;
+  background:linear-gradient(135deg,var(--amarillo),var(--amarillo-light));
+  display:flex; align-items:center; justify-content:center;
+  color:var(--verde-dark); font-weight:700; font-size:14px; flex-shrink:0;
+}
+#user-name{color:#fff; font-weight:600; font-size:14px;}
+.user-chevron{color:#fff; font-size:11px;}
+#user-dropdown{
+  position:absolute; top:calc(100% + 12px); right:0; width:270px;
+  background:#fff; border-radius:16px; box-shadow:0 20px 50px rgba(0,0,0,.18);
+  border:1px solid #e5e7eb; z-index:9999; transition:all .25s;
+}
+#user-dropdown.hidden{opacity:0; visibility:hidden; transform:translateY(-8px); pointer-events:none;}
+.user-dropdown-header{padding:18px 20px; background:linear-gradient(135deg,var(--verde),var(--verde-dark)); border-radius:16px 16px 0 0;}
+#dropdown-user-name{color:#fff; font-size:15px; font-weight:700; margin-bottom:3px;}
+#dropdown-user-email{color:rgba(255,255,255,.75); font-size:12px;}
+#dropdown-user-role{display:inline-block; margin-top:8px; padding:3px 10px; border-radius:10px; font-size:12px; font-weight:600;}
+.user-dropdown-item{
+  display:flex; align-items:center; gap:12px; padding:13px 18px;
+  color:#1f2937; text-decoration:none; font-size:14px; font-weight:500;
+  transition:all .2s; background:none; border:none; width:100%; cursor:pointer; text-align:left;
+}
+.user-dropdown-item:hover{background:#f3f4f6; color:var(--verde);}
+.user-dropdown-item i{color:#9ca3af; width:18px; margin-right:0;}
+.user-dropdown-item:hover i{color:var(--verde);}
+.user-dropdown-divider{height:1px; background:#e5e7eb; margin:6px 0;}
+.user-dropdown-item.logout{color:#dc2626;}
+.user-dropdown-item.logout:hover{background:#fee2e2;}
+.user-dropdown-item.logout i{color:#dc2626;}
+
+/* ── Hamburger ───────────────────────────────────────────────────────────── */
+.hamburger{
+  display:none; flex-direction:column; gap:5px;
+  cursor:pointer; padding:8px; border-radius:8px;
+  background:none; border:none; transition:background .2s;
+}
+.hamburger:hover{background:rgba(255,255,255,.1);}
+.hamburger span{display:block; width:24px; height:2.5px; background:#fff; border-radius:3px; transition:all .3s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0; transform:scaleX(0);}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+
+/* Hide old mobile-toggle */
+.mobile-toggle{display:none !important;}
+
+/* ── Mobile panel ────────────────────────────────────────────────────────── */
+.mobile-nav{
+  display:none; position:fixed;
+  top:var(--header-h); left:0; right:0; bottom:0;
+  background:rgba(0,0,0,.6); z-index:999; opacity:0; transition:opacity .3s;
+}
+.mobile-nav.open{opacity:1;}
+.mobile-nav-panel{
+  position:absolute; top:0; right:0;
+  width:min(320px,90vw); height:100%; background:#fff; padding:24px 0;
+  transform:translateX(100%); transition:transform .35s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto; box-shadow:-8px 0 40px rgba(0,0,0,.15);
+}
+.mobile-nav.open .mobile-nav-panel{transform:translateX(0);}
+.mobile-nav-link{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:15px 24px; color:#1f2937; text-decoration:none;
+  font-size:16px; font-weight:600; border-bottom:1px solid #e5e7eb; transition:all .2s;
+}
+.mobile-nav-link:hover{background:#f9fafb; color:var(--verde);}
+.mobile-nav-section{padding:6px 24px; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#9ca3af; background:#f9fafb;}
+.mobile-submenu a{
+  display:flex; align-items:center; gap:10px; padding:12px 32px;
+  color:#4b5563; text-decoration:none; font-size:15px;
+  border-bottom:1px solid #f3f4f6; transition:all .2s;
+}
+.mobile-submenu a:hover{background:#f9fafb; color:var(--verde);}
+.mobile-auth-buttons{padding:20px 24px; display:flex; flex-direction:column; gap:10px;}
+.mobile-btn-full{display:block; text-align:center; padding:14px; border-radius:12px; font-weight:700; font-size:15px; text-decoration:none; transition:all .25s;}
+.mobile-btn-login{background:#fff; color:var(--verde); border:2px solid var(--verde);}
+.mobile-btn-register{background:linear-gradient(135deg,var(--amarillo),var(--amarillo-light)); color:var(--verde-dark); box-shadow:0 4px 14px rgba(244,196,0,.35);}
+
+/* ── SHOW hamburger / HIDE nav at 900px ──────────────────────────────────── */
+@media(max-width:900px){
+  nav{display:none !important;}
+  .hamburger{display:flex !important;}
+  .mobile-nav{display:block;}
+  #user-name{display:none !important;}
+  #authButtons .btn-login{display:none;}
+}
+@media(max-width:480px){
+  #authButtons{display:none !important;}
+}
+
+/* ═══ RESPONSIVIDAD DEL CUERPO ═══════════════════════════════════════════ */
+
+html{font-size:clamp(14px,1.6vw,16px); scroll-behavior:smooth;}
+body{overflow-x:hidden;}
+img{max-width:100%; height:auto;}
+
+/* Hero */
+.hero{height:clamp(220px,38vw,380px) !important; min-height:200px !important;}
+.hero h1{font-size:clamp(1.3rem,5.5vw,3.2rem) !important; padding:0 clamp(16px,4vw,40px) !important; max-width:90vw !important; line-height:1.15 !important;}
+
+/* Main */
+main{
+  max-width:min(1200px,calc(100% - 24px)) !important;
+  margin:clamp(16px,3vw,50px) auto 0 !important;
+  padding:clamp(20px,4vw,50px) clamp(16px,4vw,50px) !important;
+  border-radius:clamp(8px,2vw,12px) !important;
+}
+main h1{font-size:clamp(1.4rem,4.5vw,2.4rem);}
+main h2{font-size:clamp(1.15rem,3.5vw,2rem);}
+main h3{font-size:clamp(1rem,2.5vw,1.5rem);}
+main p{font-size:clamp(0.9rem,2vw,1.1rem); line-height:1.75;}
+
+/* Adaptive grids */
+.datos-grid,.atracciones-grid,.servicios-grid,.alojamientos-grid,.elementos-grid,.gallery-grid,.cards-grid{
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr)) !important;
+}
+.form-row{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)) !important;}
+
+/* Footer */
+footer{padding:clamp(32px,5vw,60px) clamp(16px,4vw,40px) clamp(16px,3vw,28px);}
+.footer-main h2{font-size:clamp(20px,5vw,32px);}
+.footer-info,.footer-contact{flex-wrap:wrap; gap:clamp(12px,2vw,24px); justify-content:center;}
+.social-icons{flex-wrap:wrap; justify-content:center;}
+
+/* Btn volver */
+.btn-volver{position:fixed; top:calc(var(--header-h) + 16px); left:16px; z-index:9999;}
+
+@media(max-width:1200px){
+  .container{grid-template-columns:1fr !important; max-width:720px; margin-inline:auto; padding-inline:clamp(16px,4vw,32px);}
+}
+@media(max-width:1024px){
+  .intro-inner,.footer-top,.content-grid,.event-grid{grid-template-columns:1fr !important;}
+  .reviews-summary{flex-direction:column; gap:24px; padding:24px;}
+}
+@media(max-width:768px){
+  .hero{height:clamp(200px,48vw,320px) !important;}
+  .hero h1{font-size:clamp(1.2rem,6.5vw,2.2rem) !important;}
+  main{margin:12px auto !important; padding:clamp(16px,3vw,28px) !important;}
+  .datos-grid,.atracciones-grid,.servicios-grid,.alojamientos-grid,.elementos-grid{grid-template-columns:1fr !important;}
+  .elementos-section,.atracciones-section,.servicios-section{padding:28px 16px;}
+  .form-row{grid-template-columns:1fr !important;}
+  .service-type-grid{grid-template-columns:1fr 1fr !important;}
+  .modal-content{padding:clamp(20px,3vw,36px); margin:12px;}
+  .modal-buttons{flex-direction:column;}
+  .reviews-summary{flex-direction:column; padding:20px; gap:16px;}
+  .summary-score .big-number{font-size:3.5rem !important;}
+  .review-form-wrapper{padding:clamp(16px,3vw,28px);}
+  .footer-info,.footer-contact{flex-direction:column; align-items:center; gap:12px;}
+  .profile-layout,.contact-grid,.reservations-grid,.map-layout{grid-template-columns:1fr !important;}
+  .map-wrapper,#map{height:clamp(280px,50vw,450px) !important;}
+}
+@media(max-width:640px){
+  .hero{height:clamp(180px,52vw,280px) !important;}
+  .service-type-grid{grid-template-columns:1fr !important;}
+  .security-badges{flex-wrap:wrap; justify-content:center; gap:10px;}
+  .gallery-grid{grid-template-columns:1fr 1fr !important;}
+  .sitio-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)) !important;}
+  .category-cards-grid{grid-template-columns:1fr !important;}
+}
+@media(max-width:480px){
+  html{font-size:14px;}
+  main{margin:8px auto !important;}
+  .hero{height:clamp(160px,55vw,240px) !important;}
+  .hero h1{font-size:clamp(1.1rem,8vw,1.7rem) !important;}
+  .gallery-grid{grid-template-columns:1fr !important;}
+  .social-icons a{width:44px !important; height:44px !important; font-size:18px !important;}
+  .footer-main h2{font-size:clamp(18px,6vw,24px);}
+  .map-wrapper,#map{height:clamp(240px,60vw,320px) !important;}
+}
+@media(max-width:375px){
+  main{margin:4px auto !important; padding:12px !important;}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important; transition-duration:.01ms !important;}
+}
+</style>
 </head>
 <body>
 
 <!-- ══════════════════════════════════════════════════
      HEADER
 ══════════════════════════════════════════════════ -->
-<header>
+  <header>
     <div class="header-container">
-        <div class="header-content">
-            <div class="logo-section">
-                <img src="../assets/img/logo.png" alt="Logo Gigante Viajero" class="logo-img">
-                <span class="logo-text">Gigante Viajero</span>
+      <div class="header-content">
+        <a href="index.html" class="logo-section">
+          <img src="../assets/img/logo.png" alt="Gigante Viajero" class="logo-img">
+          <span class="logo-text">Gigante Viajero</span>
+        </a>
+        <nav>
+          <ul class="nav-menu">
+            <li><a href="index.html" class="nav-link">Inicio</a></li>
+            <li><a href="sitio.html" class="nav-link">Explora</a></li>
+            <li class="dropdown">
+              <a href="#" class="nav-link dropdown-toggle">Descubre ▾</a>
+              <div class="dropdown-menu">
+                <a href="naturaleza.html">🌿 Naturaleza</a>
+                <a href="historia.html">🏛️ Historia</a>
+                <a href="gastronomia.html">🍴 Gastronomía</a>
+                <a href="turismo religioso.html">⛪ Turismo Religioso</a>
+              </div>
+            </li>
+            <li><a href="mapa.html" class="nav-link">Mapa</a></li>
+            <li><a href="contactos.html" class="nav-link">Contacto</a></li>
+          </ul>
+        </nav>
+        <div class="auth-section">
+          <div id="user-menu-container">
+            <button id="user-menu-button">
+              <div id="user-initials">U</div>
+              <span id="user-name">Usuario</span>
+              <i class="fas fa-chevron-down user-chevron"></i>
+            </button>
+            <div id="user-dropdown" class="hidden">
+              <div class="user-dropdown-header">
+                <div id="dropdown-user-name">Nombre Usuario</div>
+                <div id="dropdown-user-email">usuario@correo.com</div>
+                <span id="dropdown-user-role">👤 Cliente</span>
+              </div>
+              <div id="admin-options" style="display:none">
+                <a href="admin_dashboard.html" class="user-dropdown-item"><i class="fas fa-chart-line"></i>Dashboard</a>
+                <div class="user-dropdown-divider"></div>
+              </div>
+              <a href="perfil.html" class="user-dropdown-item"><i class="fas fa-user"></i>Mi Perfil</a>
+              <a href="mis_reservas.html" class="user-dropdown-item"><i class="fas fa-shopping-bag"></i>Mis Reservas</a>
+              <div class="user-dropdown-divider"></div>
+              <button id="logout-button" class="user-dropdown-item logout"><i class="fas fa-sign-out-alt"></i>Cerrar Sesión</button>
             </div>
-            <nav aria-label="Navegación principal">
-                <ul class="nav-menu" id="navMenu">
-                    <li><a href="index.html"    class="nav-link">Inicio</a></li>
-                    <li><a href="sitio.html"    class="nav-link">Explora</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true">
-                            Descubre <i class="fas fa-chevron-down" style="font-size:10px;"></i>
-                        </a>
-                        <div class="dropdown-menu" role="menu">
-                            <a href="naturaleza.html"        role="menuitem">Naturaleza</a>
-                            <a href="historia.html"          role="menuitem">Historia</a>
-                            <a href="gastronomia.html"       role="menuitem">Gastronomía</a>
-                            <a href="turismo religioso.html" role="menuitem">Turismo Religioso</a>
-                        </div>
-                    </li>
-                    <li><a href="mapa.html"      class="nav-link">Mapa</a></li>
-                    <li><a href="contactos.html" class="nav-link">Contacto</a></li>
-                </ul>
-            </nav>
-            <div class="auth-section">
-                <div id="user-menu-container">
-                    <button id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-                        <div id="user-initials">U</div>
-                        <span id="user-name">Usuario</span>
-                        <i class="fas fa-chevron-down" style="color:white;font-size:12px;"></i>
-                    </button>
-                    <div id="user-dropdown" class="hidden" role="menu">
-                        <div class="user-dropdown-header">
-                            <div id="dropdown-user-name">Nombre Usuario</div>
-                            <div id="dropdown-user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="781d15191114381d121d15081417561b1715">[email&#160;protected]</a></div>
-                            <span id="dropdown-user-role">👤 Cliente</span>
-                        </div>
-                        <div id="admin-options" style="display:none;">
-                            <a href="admin_dashboard.html" class="user-dropdown-item" role="menuitem">
-                                <i class="fas fa-chart-line"></i>Dashboard
-                            </a>
-                            <div class="user-dropdown-divider"></div>
-                        </div>
-                        <a href="perfil.html"       class="user-dropdown-item" role="menuitem"><i class="fas fa-user"></i>Mi Perfil</a>
-                        <a href="mis_reservas.html" class="user-dropdown-item" role="menuitem"><i class="fas fa-shopping-bag"></i>Mis reservas</a>
-                        <div class="user-dropdown-divider"></div>
-                        <button id="logout-button" class="user-dropdown-item logout" role="menuitem">
-                            <i class="fas fa-sign-out-alt"></i>Cerrar Sesión
-                        </button>
-                    </div>
-                </div>
-                <div id="authButtons" style="display:flex;gap:12px;">
-                    <a href="login.html"    class="btn btn-login">Iniciar Sesión</a>
-                    <a href="register.html" class="btn btn-register">Registrarse</a>
-                </div>
-                <div class="mobile-toggle" id="mobileToggle" aria-label="Menú móvil">
-                    <span></span><span></span><span></span>
-                </div>
-            </div>
+          </div>
+          <div id="authButtons" style="display:flex;gap:8px;align-items:center;">
+            <a href="login.html" class="btn-login">Iniciar Sesión</a>
+            <a href="register.html" class="btn-register">Registrarse</a>
+          </div>
+          <button class="hamburger" id="hamburger" aria-label="Menú">
+            <span></span><span></span><span></span>
+          </button>
         </div>
+      </div>
     </div>
-</header>
+  </header>
+  <div class="mobile-nav" id="mobileNav">
+    <div class="mobile-nav-panel">
+      <a href="index.html" class="mobile-nav-link">🏠 Inicio <i class="fas fa-chevron-right" style="font-size:12px;color:#9ca3af"></i></a>
+      <a href="sitio.html" class="mobile-nav-link">🗺️ Explora <i class="fas fa-chevron-right" style="font-size:12px;color:#9ca3af"></i></a>
+      <div class="mobile-nav-section">Descubre</div>
+      <div class="mobile-submenu">
+        <a href="naturaleza.html">🌿 Naturaleza</a>
+        <a href="historia.html">🏛️ Historia</a>
+        <a href="gastronomia.html">🍴 Gastronomía</a>
+        <a href="turismo religioso.html">⛪ Turismo Religioso</a>
+      </div>
+      <a href="mapa.html" class="mobile-nav-link">📍 Mapa <i class="fas fa-chevron-right" style="font-size:12px;color:#9ca3af"></i></a>
+      <a href="contactos.html" class="mobile-nav-link">✉️ Contacto <i class="fas fa-chevron-right" style="font-size:12px;color:#9ca3af"></i></a>
+      <div id="mobile-auth-section" class="mobile-auth-buttons">
+        <a href="login.html" class="mobile-btn-full mobile-btn-login">Iniciar Sesión</a>
+        <a href="register.html" class="mobile-btn-full mobile-btn-register">Registrarse</a>
+      </div>
+    </div>
+  </div>
 
 <!-- ══════════════════════════════════════════════════
      HERO
@@ -435,7 +928,7 @@
                 <div class="info-box" style="background:linear-gradient(135deg,#fef3c7,#fde68a);border-left-color:#f59e0b;">
                     <p style="color:#92400e;">
                         <i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i>
-                        <strong>Aviso importante:</strong> El pago se realiza únicamente por Nequi al número del sitio elegido.
+                        <strong>Aviso importante:</strong> El pago se realizara por Nequi o cuenta Bancaria del sitio elegido.
                         Envía el comprobante por WhatsApp una vez realizado.
                     </p>
                 </div>
@@ -570,29 +1063,62 @@
 <!-- ══════════════════════════════════════════════════
      FOOTER
 ══════════════════════════════════════════════════ -->
-<footer>
-    <div class="footer-container">
-        <div class="footer-main">
-            <h2 data-biz="businessName">Gigante Viajero</h2>
-            <p>Tu compañero ideal para descubrir nuevos destinos, vivir experiencias únicas y viajar con confianza.</p>
-            <div class="social-icons">
-                <a id="footer-facebook"  href="https://facebook.com"  target="_blank" rel="noopener" class="social-facebook"  aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                <a                        href="https://tiktok.com"    target="_blank" rel="noopener" class="social-tiktok"    aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
-                <a id="footer-instagram" href="https://instagram.com" target="_blank" rel="noopener" class="social-instagram" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                <a                        href="https://x.com"         target="_blank" rel="noopener" class="social-x"        aria-label="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
-            </div>
-        </div>
-        <div class="footer-divider"></div>
-        <div class="footer-info">
-            <div class="info-item"><i class="fas fa-envelope"></i><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4f262129200f2826282e213b2a39262e252a3d20612c2022">[email&#160;protected]</a></span></div>
-            <div class="info-item"><i class="fas fa-phone"></i><span data-biz="businessPhone">+57 123 456 7890</span></div>
-            <div class="info-item"><i class="fas fa-map-marker-alt"></i><span data-biz="businessAddress">Gigante, Huila</span></div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2025 <span data-biz="businessName">Gigante Viajero</span> — Todos los derechos reservados</p>
-        </div>
+    <!-- WhatsApp -->
+  <a class="whatsapp-btn"
+    href="https://wa.me/573203867524?text=Hola!%20Me%20interesa%20conocer%20m%C3%A1s%20sobre%20Gigante%20Viajero%20%F0%9F%8C%8D"
+    target="_blank" rel="noopener noreferrer" title="WhatsApp">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+  <!-- TuriBot -->
+  <button class="turibot-toggle" onclick="toggleTuribot()" aria-label="Abrir TuriBot">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <span>Preguntar a TuriBot</span>
+  </button>
+
+  <div class="turibot-container" id="turibot">
+    <div class="turibot-header">TuriBot · Gigante Viajero</div>
+    <div class="turibot-messages" id="turibotMessages"></div>
+    <div class="turibot-input">
+      <input type="text" id="turibotInput" placeholder="Escribe tu pregunta...">
+      <button onclick="sendTuribotMessage()">Enviar</button>
     </div>
-</footer>
+  </div>
+
+  <!-- Botón Volver -->
+  <a class="btn-volver" onclick="history.back()" href="#">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  </a>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h2>Gigante Viajero</h2>
+          <p>Tu compañero ideal para descubrir nuevos destinos, vivir experiencias únicas y viajar con confianza.</p>
+        </div>
+        <div class="footer-social">
+          <a href="https://facebook.com"  target="_blank" class="social-link sf"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="https://tiktok.com"    target="_blank" class="social-link st"><i class="fa-brands fa-tiktok"></i></a>
+          <a href="https://instagram.com" target="_blank" class="social-link si"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://x.com"         target="_blank" class="social-link sx"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-contact">
+        <a href="mailto:info@giganteviajero.com" class="contact-item"><i class="fas fa-envelope"></i>info@giganteviajero.com</a>
+        <span class="contact-item"><i class="fas fa-phone"></i>+57 123 456 7890</span>
+        <span class="contact-item"><i class="fas fa-map-marker-alt"></i>Gigante, Huila, Colombia</span>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 Gigante Viajero — Todos los derechos reservados</p>
+      </div>
+    </div>
+  </footer>
 
 <!-- ══════════════════════════════════════════════════
      SCRIPTS
@@ -759,23 +1285,8 @@
   .quick-buttons button { background:#f0f9f0; border:1px solid #4caf50; border-radius:16px; padding:5px 11px; font-size:12px; cursor:pointer; color:#2e7d32; transition:background .2s; font-family:'Inter',sans-serif; }
   .quick-buttons button:hover { background:#4caf50; color:white; }
   @media (max-width:480px) { .turibot-container { right:8px; left:8px; width:auto; bottom:88px; height:430px; } .turibot-toggle { bottom:20px; right:20px; width:52px; height:52px; } }
-</style>
-
-<div class="turibot-toggle" onclick="toggleTuribot()">
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-  </svg>
-  <span>Preguntar a TuriBot</span>
-</div>
-<div class="turibot-container" id="turibot">
-    <div class="turibot-header">TuriBot • Turismo Gigante Huila</div>
-    <div class="turibot-messages" id="turibotMessages"></div>
-    <div class="turibot-input">
-        <input type="text" id="turibotInput" placeholder="Pregunta o pide un plan...">
-        <button onclick="sendTuribotMessage()">Enviar</button>
-    </div>
-</div>
-/* ── Botón WhatsApp ─────────────────────────── */
+</style></div>
+<script src="../scripts/gv-header.js"></script> 
 <style>
 
 .whatsapp-btn {
@@ -838,16 +1349,93 @@
   }
 }
 </style>
-   <a 
-  class="whatsapp-btn" 
-  href="https://wa.me/573203867524?text=Hola!%20Me%20interesa%20conocer%20m%C3%A1s%20sobre%20los%20tours%20de%20Gigante%20Viajero%20%F0%9F%8C%8D" 
-  target="_blank" 
-  rel="noopener noreferrer"
-  title="WhatsApp"
->
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-  </svg>
-</a>
+<script>
+/* ═══ GV NAV SCRIPT ══════════════════════════════════════════════════════ */
+(function(){
+  var hamburger=document.getElementById('hamburger');
+  var mobileNav=document.getElementById('mobileNav');
+  if(hamburger&&mobileNav){
+    hamburger.addEventListener('click',function(){
+      hamburger.classList.toggle('open');
+      if(mobileNav.classList.contains('open')){
+        mobileNav.classList.remove('open');
+        setTimeout(function(){mobileNav.style.display='none';},300);
+      } else {
+        mobileNav.style.display='block';
+        requestAnimationFrame(function(){mobileNav.classList.add('open');});
+      }
+    });
+    mobileNav.addEventListener('click',function(e){
+      if(e.target===mobileNav){
+        hamburger.classList.remove('open');
+        mobileNav.classList.remove('open');
+        setTimeout(function(){mobileNav.style.display='none';},300);
+      }
+    });
+  }
+  /* User dropdown */
+  var uBtn=document.getElementById('user-menu-button');
+  var uDd=document.getElementById('user-dropdown');
+  var uCon=document.getElementById('user-menu-container');
+  if(uBtn&&uDd){
+    uBtn.addEventListener('click',function(e){e.stopPropagation();uDd.classList.toggle('hidden');});
+    document.addEventListener('click',function(e){if(uCon&&!uCon.contains(e.target))uDd.classList.add('hidden');});
+  }
+  /* Logout */
+  var lb=document.getElementById('logout-button');
+  if(lb){
+    lb.addEventListener('click',async function(e){
+      e.preventDefault();
+      if(typeof window.firebaseLogout==='function')await window.firebaseLogout();
+      if(typeof authAPI!=='undefined')authAPI.logout();
+      ['gigante_user','gigante_token','gigante_auth','token','authToken','user','currentUser','userData']
+        .forEach(function(k){localStorage.removeItem(k);});
+      window.location.href='index.html';
+    });
+  }
+  /* Update header */
+  function getUser(){
+    if(typeof authAPI!=='undefined'&&authAPI.isAuthenticated()){var u=authAPI.getUser();if(u)return u;}
+    try{
+      if(localStorage.getItem('gigante_auth')==='true'){
+        var u=JSON.parse(localStorage.getItem('gigante_user'));if(u&&u.email)return u;
+      }
+    }catch(e){}
+    return null;
+  }
+  function updateHeader(){
+    var user=getUser();
+    var ab=document.getElementById('authButtons');
+    var uc=document.getElementById('user-menu-container');
+    var mas=document.getElementById('mobile-auth-section');
+    if(user){
+      if(ab)ab.style.display='none';
+      if(uc)uc.style.display='block';
+      if(mas){mas.innerHTML='<a href="perfil.html" class="mobile-btn-full mobile-btn-login">👤 Mi Perfil</a><a href="mis_reservas.html" class="mobile-btn-full mobile-btn-register">🛍️ Mis Reservas</a>';}
+      var fn=user.firstName||'Usuario',ln=user.lastName||'';
+      var ini=(fn.charAt(0)+ln.charAt(0)).toUpperCase();
+      var ie=document.getElementById('user-initials');
+      if(ie){
+        if(user.photoURL){ie.style.cssText='background:transparent;padding:0;overflow:hidden;';ie.innerHTML='<img src="'+user.photoURL+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';}
+        else{ie.textContent=ini;}
+      }
+      var ne=document.getElementById('user-name');if(ne)ne.textContent=fn;
+      var dne=document.getElementById('dropdown-user-name');if(dne)dne.textContent=(fn+' '+ln).trim();
+      var dee=document.getElementById('dropdown-user-email');if(dee)dee.textContent=user.email||'';
+      var re=document.getElementById('dropdown-user-role');
+      var ao=document.getElementById('admin-options');
+      if(re){
+        if(user.role==='admin'){re.textContent='🔧 Administrador';re.style.cssText='background:rgba(244,196,0,.3);color:#F4C400;';if(ao)ao.style.display='block';}
+        else{re.textContent=user.provider==='google'?'🔥 Google':'👤 Cliente';re.style.cssText='background:rgba(59,130,246,.2);color:#3B82F6;';if(ao)ao.style.display='none';}
+      }
+    } else {
+      if(uc)uc.style.display='none';if(ab)ab.style.display='flex';
+    }
+  }
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(updateHeader,150);});
+  window.addEventListener('storage',function(e){if(['authData','gigante_auth','gigante_user'].includes(e.key))updateHeader();});
+})();
+</script>
+<script src="../scripts/turibot.js" defer></script>
 </body>
 </html>

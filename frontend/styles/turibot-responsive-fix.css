@@ -1,0 +1,165 @@
+/* ═══════════════════════════════════════════════════════════════════
+   GIGANTE VIAJERO — TURIBOT + WHATSAPP RESPONSIVE FIX UNIVERSAL
+   Basado en el código del mapa.html que funciona correctamente.
+   
+   USO: Pegar en el <head> de cada página, DESPUÉS de todos los estilos.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── TuriBot toggle (pill) ── */
+.turibot-toggle {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  height: 48px !important;
+  padding: 0 20px 0 14px !important;
+  border-radius: 999px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  z-index: 10000 !important;
+  width: auto !important;
+  min-width: unset !important;
+  max-width: unset !important;
+  overflow: visible !important;
+  white-space: nowrap !important;
+  box-sizing: border-box !important;
+}
+
+.turibot-toggle span {
+  color: white !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+  display: inline !important;
+  overflow: visible !important;
+}
+
+/* ── WhatsApp: sube para no tapar el TuriBot ── */
+.whatsapp-btn {
+  position: fixed !important;
+  bottom: 90px !important;
+  right: 24px !important;
+  width: 56px !important;
+  height: 56px !important;
+  z-index: 10000 !important;
+}
+
+/* ── Ventana del chat ── */
+.turibot-container {
+  position: fixed !important;
+  bottom: 86px !important;
+  right: 24px !important;
+  width: 360px !important;
+  max-width: calc(100vw - 32px) !important;
+  height: 500px !important;
+  max-height: calc(100svh - 110px) !important;
+  z-index: 10001 !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/* ════════════════════════════════════════════
+   TABLET  ≤ 768px
+════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .turibot-toggle {
+    bottom: 20px !important;
+    right: 16px !important;
+    height: 44px !important;
+    padding: 0 16px 0 12px !important;
+  }
+
+  .turibot-toggle span {
+    font-size: 12px !important;
+  }
+
+  .whatsapp-btn {
+    bottom: 80px !important;
+    right: 16px !important;
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  /* Tooltip WhatsApp oculto en móvil */
+  .whatsapp-btn::before {
+    display: none !important;
+  }
+
+  /* Chat abre casi toda la pantalla */
+  .turibot-container {
+    right: 8px !important;
+    left: 8px !important;
+    width: auto !important;
+    bottom: 78px !important;
+    height: calc(100svh - 120px) !important;
+    max-height: 480px !important;
+  }
+}
+
+/* ════════════════════════════════════════════
+   MÓVIL PEQUEÑO  ≤ 480px
+════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .turibot-toggle {
+    bottom: 16px !important;
+    right: 12px !important;
+    height: 42px !important;
+    padding: 0 14px 0 10px !important;
+  }
+
+  .turibot-toggle span {
+    font-size: 11px !important;
+    max-width: 120px !important;
+  }
+
+  .whatsapp-btn {
+    bottom: 72px !important;
+    right: 12px !important;
+    width: 46px !important;
+    height: 46px !important;
+  }
+
+  .turibot-container {
+    right: 6px !important;
+    left: 6px !important;
+    bottom: 70px !important;
+    height: calc(100svh - 110px) !important;
+    max-height: 420px !important;
+    border-radius: 16px !important;
+  }
+}
+
+/* ════════════════════════════════════════════
+   PANTALLAS MUY PEQUEÑAS  ≤ 360px
+   (solo ícono, sin texto)
+════════════════════════════════════════════ */
+@media (max-width: 360px) {
+  .turibot-toggle span {
+    display: none !important;
+  }
+
+  .turibot-toggle {
+    width: 46px !important;
+    height: 46px !important;
+    padding: 0 !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    bottom: 14px !important;
+    right: 10px !important;
+  }
+
+  .whatsapp-btn {
+    bottom: 72px !important;
+    right: 10px !important;
+    width: 42px !important;
+    height: 42px !important;
+  }
+
+  .turibot-container {
+    right: 4px !important;
+    left: 4px !important;
+    bottom: 68px !important;
+    max-height: 380px !important;
+  }
+}

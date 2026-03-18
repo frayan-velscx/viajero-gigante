@@ -1,6 +1,7 @@
 // =============================================
 // reservations.js — Gigante Viajero
 // VERSIÓN UNIFICADA: cabañas + entradas + disponibilidad por alojamiento
+// ✅ ACTUALIZADO: soporte para cuenta bancaria (Bancolombia) en sitios sin Nequi
 // =============================================
 
 // ==================== CATÁLOGO DE DESTINOS ====================
@@ -30,11 +31,18 @@ const destinationsCatalog = {
 };
 
 // ==================== CATÁLOGO DE SITIOS (cabañas + entradas) ====================
+//
+// ✅ ESTRUCTURA DE PAGO:
+//   - paymentMethod: 'nequi'   → muestra número Nequi (nequiNumber + nequiTitular)
+//   - paymentMethod: 'bancolombia' → muestra cuenta de ahorros Bancolombia
+//                                    (bankAccount, bankTitular, bankCC)
+//   - Si no se define paymentMethod, el sistema asume 'nequi' por retrocompatibilidad.
 
 const sitesCatalog = {
     'brisas-de-mirthayu': {
         nombre: 'Brisas de Mirthayú',
-        nequiNumber: '',
+        paymentMethod: 'nequi',
+        nequiNumber: '3222313146',
         nequiTitular: 'Brisas de Mirthayú',
         entrada: { precio: 5000, notas: 'Piscina adicional $7.000 · Hidropedales $8.000 · Cabalgata $10.000' },
         alojamientos: [
@@ -44,7 +52,8 @@ const sitesCatalog = {
     },
     'xhimanut-parque-de-los-suenos': {
         nombre: 'Xhimanut - Parque de los Sueños',
-        nequiNumber: '',
+        paymentMethod: 'nequi',
+        nequiNumber: '3193999708',
         nequiTitular: 'Xhimanut Parque',
         entrada: { precio: 12000, notas: 'Algunas atracciones tienen costo adicional. Consultar en taquilla.' },
         alojamientos: [
@@ -54,7 +63,8 @@ const sitesCatalog = {
     },
     'los-pinos-parque-agroecoturistico': {
         nombre: 'Los Pinos - Parque Agroecoturístico',
-        nequiNumber: '',
+        paymentMethod: 'nequi',
+        nequiNumber: '3203867524',
         nequiTitular: 'Los Pinos Ecoturismo',
         entrada: { precio: 48000, notas: 'Incluye almuerzo típico huilense.' },
         alojamientos: [
@@ -66,10 +76,15 @@ const sitesCatalog = {
             { id: 'pinos-alpino-plus',     nombre: 'Alpino Plus',        tipo: 'cabaña',   capacidadMax: 6,  incluyeDesayuno: true, precio: 510000,  descripcion: 'Cabaña premium con amenidades adicionales y zona BBQ.',                     amenidades: ['Sala de estar', 'Baño premium', 'Terraza con vista', 'Zona BBQ', 'WiFi'] }
         ]
     },
+
+    // ✅ ACTUALIZADO: La Mano del Gigante usa cuenta de ahorros Bancolombia
     'la-mano-del-gigante': {
         nombre: 'La Mano del Gigante',
-        nequiNumber: '',
-        nequiTitular: 'La Mano del Gigante',
+        paymentMethod: 'bancolombia',
+        bankAccount:  '91238524712',
+        bankTitular:  'Jessica Katerine Cometa Sánchez',
+        bankCC:       '1082806714',
+        bankType:     'Cuenta de Ahorros',
         entrada: { precio: 15000, notas: 'Deslizador y columpio tienen costo adicional.' },
         alojamientos: [
             { id: 'mano-celeste-2',  nombre: 'Cabaña Celeste Pareja',      tipo: 'cabaña', capacidadMax: 2, incluyeDesayuno: false, precio: 280000,  descripcion: 'Íntima cabaña para dos con vista privilegiada al valle.',                              amenidades: ['Vista panorámica', 'Baño privado', 'Terraza', 'WiFi'] },
@@ -81,16 +96,19 @@ const sitesCatalog = {
             { id: 'mano-colibri',    nombre: 'Cabaña Colibrí',             tipo: 'cabaña', capacidadMax: 8, incluyeDesayuno: false, precio: 1300000, descripcion: 'La cabaña más grande, ideal para grupos o familias numerosas.',                      amenidades: ['Vista panorámica', 'Sala amplia', 'Múltiples baños', 'Zona BBQ', 'WiFi'] }
         ]
     },
+
     'la-loma-de-la-cruz': {
         nombre: 'La Loma de la Cruz',
-        nequiNumber: '',
+        paymentMethod: 'nequi',
+        nequiNumber: '3203867524',
         nequiTitular: 'La Loma de la Cruz',
         entrada: { precio: 0, notas: 'Acceso completamente gratuito. Abierto todos los días.' },
         alojamientos: []
     },
     'la-morra-mirador-360': {
         nombre: 'La Morra - Mirador 360°',
-        nequiNumber: '',
+        paymentMethod: 'nequi',
+        nequiNumber: '3203867524',
         nequiTitular: 'La Morra Mirador',
         entrada: { precio: 10000, notas: 'Llevar ropa de abrigo. Temperatura 10°C–18°C.' },
         alojamientos: [
@@ -99,15 +117,21 @@ const sitesCatalog = {
     },
     'la-casa-del-arbol': {
         nombre: 'La Casa del Árbol',
-        nequiNumber: '',
+        paymentMethod: 'nequi',
+        nequiNumber: '3114767290',
         nequiTitular: 'La Casa del Árbol',
         entrada: { precio: 8000, notas: 'Solo visitas diurnas. Ropa cómoda y calzado para senderos.' },
         alojamientos: []
     },
+
+    // ✅ ACTUALIZADO: La Perla Finca Hotel usa cuenta de ahorros Bancolombia
     'la-perla-finca-hotel': {
         nombre: 'La Perla Finca Hotel',
-        nequiNumber: '',
-        nequiTitular: 'La Perla Finca Hotel',
+        paymentMethod: 'bancolombia',
+        bankAccount:  '01378362730',
+        bankTitular:  'Ana María Parra',
+        bankCC:       '1020740001',
+        bankType:     'Cuenta de Ahorros',
         entrada: { precio: 6000, notas: 'Recorrido cafetero incluido. Cata de café opcional.' },
         alojamientos: [
             { id: 'perla-zafiro',    nombre: 'Cabaña ZAFIRO',            tipo: 'cabaña',   capacidadMax: 2, incluyeDesayuno: true, precio: 1750000, descripcion: 'La cabaña más lujosa. Diseño premium entre los cafetales.',                       amenidades: ['Jacuzzi', 'Cama king', 'Vista panorámica', 'Minibar', 'WiFi'] },
@@ -199,7 +223,6 @@ async function initializeReservationSystem() {
     const pmInput = document.getElementById('paymentMethod');
     if (pmInput) pmInput.value = 'nequi';
 
-    // Inicializar contador de personas con valor 1
     initPeopleCounter();
 
     await loadPricingFromBackend();
@@ -383,9 +406,8 @@ function clearFieldError(input) {
     parent.querySelector('.field-error')?.remove();
 }
 
-// ==================== CONTADOR DE PERSONAS (NUEVO) ====================
+// ==================== CONTADOR DE PERSONAS ====================
 
-// Estado del contador
 let _peopleCount = 1;
 
 function initPeopleCounter() {
@@ -399,7 +421,6 @@ function _renderPeopleCounter() {
 
     wrapper.innerHTML = `
         <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
-            <!-- Titular (siempre 1) -->
             <div style="display:flex;align-items:center;gap:16px;background:#f9fafb;border:2px solid #e5e7eb;border-radius:16px;padding:16px 24px;">
                 <div style="display:flex;align-items:center;gap:10px;">
                     <div style="width:40px;height:40px;background:linear-gradient(135deg,#195C33,#0d3d20);border-radius:50%;display:flex;align-items:center;justify-content:center;">
@@ -411,11 +432,7 @@ function _renderPeopleCounter() {
                     </div>
                 </div>
             </div>
-
-            <!-- Acompañantes añadidos -->
             <div id="companions-badges" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;"></div>
-
-            <!-- Botón añadir -->
             <button type="button" id="btn-add-companion"
                 onclick="addCompanion()"
                 style="display:flex;align-items:center;gap:8px;padding:14px 22px;background:linear-gradient(135deg,#F4C400,#FFE347);border:none;border-radius:14px;color:#195C33;font-size:14px;font-weight:700;cursor:pointer;transition:all .3s;box-shadow:0 4px 12px rgba(244,196,0,.3);">
@@ -423,8 +440,6 @@ function _renderPeopleCounter() {
                 Añadir acompañante
             </button>
         </div>
-
-        <!-- Contador total -->
         <div style="margin-top:14px;display:flex;align-items:center;gap:8px;">
             <i class="fas fa-users" style="color:#195C33;font-size:14px;"></i>
             <span style="font-size:14px;color:#6b7280;">Total: <strong id="people-total-label" style="color:#195C33;">${_peopleCount} ${_peopleCount === 1 ? 'persona' : 'personas'}</strong></span>
@@ -439,7 +454,6 @@ function _renderCompanionBadges() {
     const container = document.getElementById('companions-badges');
     if (!container) return;
     container.innerHTML = '';
-
     const numCompanions = _peopleCount - 1;
     for (let i = 1; i <= numCompanions; i++) {
         const badge = document.createElement('div');
@@ -480,19 +494,14 @@ function _rebuildCompanionsForms() {
 }
 
 function _syncPeopleState() {
-    // Sincroniza appState.numPeople con el contador actual
     const value = _peopleCount >= 6 ? '6+' : String(_peopleCount);
     appState.numPeople = value;
-
     const numPeopleInput = document.getElementById('numPeople');
     if (numPeopleInput) numPeopleInput.value = value;
-
     const summaryPeople = document.getElementById('summaryPeople');
     if (summaryPeople) summaryPeople.textContent = `${_peopleCount} ${_peopleCount === 1 ? 'persona' : 'personas'}`;
-
     const totalLabel = document.getElementById('people-total-label');
     if (totalLabel) totalLabel.textContent = `${_peopleCount} ${_peopleCount === 1 ? 'persona' : 'personas'}`;
-
     calculateTotalPrice();
 }
 
@@ -503,7 +512,7 @@ function _scrollToCompanionForm(index) {
     }, 200);
 }
 
-// ==================== ACOMPAÑANTES (sección de formularios) ====================
+// ==================== ACOMPAÑANTES ====================
 
 function updateCompanionsSection(numCompanions) {
     let section = document.getElementById('companions-section');
@@ -606,7 +615,6 @@ function loadDestinationsForType(serviceType) {
     destinations.forEach(dest => {
         const option = document.createElement('option');
         option.value       = dest.id;
-        // ✅ CAMBIO: solo mostrar el nombre, sin precio
         option.textContent = dest.name;
         select.appendChild(option);
     });
@@ -615,7 +623,6 @@ function loadDestinationsForType(serviceType) {
     appState.selectedDestinationDb = null;
 }
 
-// ── selectDestination: punto de entrada ÚNICO ──
 async function selectDestination(destinationId) {
     bookingTypeState.mode          = null;
     bookingTypeState.selectedAccom = null;
@@ -665,7 +672,7 @@ async function selectDestination(destinationId) {
     if (siteData) renderBookingTypeSelector(siteData);
     else console.warn(`⚠️ Sin datos en sitesCatalog para slug: "${destination.slug}"`);
 
-    renderFormNequiInfo(destination.slug);
+    renderFormPaymentInfo(destination.slug);
     calculateTotalPrice();
 }
 
@@ -819,16 +826,12 @@ function renderAccommodationCards(siteData) {
 
 function selectAccommodation(accom) {
     bookingTypeState.selectedAccom = accom;
-
     document.querySelectorAll('.accom-card').forEach(c => c.classList.remove('selected'));
     document.getElementById(`card-${accom.id}`)?.classList.add('selected');
-
     appState.selectedDestination = { ...appState.selectedDestination, price: accom.precio };
     _updateSummaryAccom('alojamiento', accom, accom.precio);
     calculateTotalPrice();
-
     _loadAvailability('alojamiento', appState.selectedDestination?.id, accom.id);
-
     document.querySelector('.reservation-summary')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
@@ -842,7 +845,6 @@ async function _loadAvailability(mode, destinationId, accommodationId) {
     const cacheKey = mode === 'alojamiento' && accommodationId
         ? `accom:${accommodationId}`
         : `entrada:${destinationId}`;
-
     availabilityState.lastKey = cacheKey;
 
     try {
@@ -852,10 +854,8 @@ async function _loadAvailability(mode, destinationId, accommodationId) {
         } else {
             params.set('entranceOnly', 'true');
         }
-
         const res  = await fetch(`${API_BASE}/bookings/availability?${params}`);
         const json = await res.json();
-
         if (json.success && json.data?.occupiedRanges) {
             availabilityState.occupiedRanges = json.data.occupiedRanges.map(r => ({
                 checkIn:  new Date(r.checkIn),
@@ -991,7 +991,6 @@ function _createCalendarSection() {
                 <i class="fas fa-check-circle" style="color:#10b981;"></i> ¡Todas las fechas están disponibles!
             </p>
         </div>`;
-
     if (dateSection) dateSection.insertAdjacentElement('afterend', section);
     else document.querySelector('.reservation-form')?.appendChild(section);
     return section;
@@ -1233,9 +1232,11 @@ function collectFormData(activeUser) {
         if (name) companions.push({ name, documentType: docType, documentNumber: docNum });
     }
 
-    const slug        = appState.selectedDestination?.slug || '';
-    const nequiNumber  = sitesCatalog[slug]?.nequiNumber  || appState.selectedDestinationDb?.nequiNumber  || '';
-    const nequiTitular = sitesCatalog[slug]?.nequiTitular || appState.selectedDestinationDb?.nequiTitular || '';
+    const slug     = appState.selectedDestination?.slug || '';
+    const siteData = sitesCatalog[slug] || {};
+
+    // ✅ Recoger datos de pago según el método del sitio
+    const paymentInfo = _getPaymentInfo(slug);
 
     const data = {
         bookingCode:   generateBookingCode(),
@@ -1245,9 +1246,8 @@ function collectFormData(activeUser) {
         bookingMode:   bookingTypeState.mode || 'entrada',
         destination: {
             ...appState.selectedDestination,
-            qrImageUrl:    appState.selectedDestinationDb?.qrImageUrl || '',
-            nequiNumber,
-            nequiTitular
+            qrImageUrl: appState.selectedDestinationDb?.qrImageUrl || '',
+            ...paymentInfo
         },
         checkIn:       appState.checkInDate,
         checkOut:      appState.checkOutDate,
@@ -1266,7 +1266,7 @@ function collectFormData(activeUser) {
             name:  document.getElementById('emergencyContact')?.value.trim() || '',
             phone: document.getElementById('emergencyPhone')?.value.trim()   || ''
         },
-        paymentMethod: 'nequi',
+        paymentMethod: siteData.paymentMethod || 'nequi',
         pricing: {
             basePrice,
             subtotal,
@@ -1290,6 +1290,35 @@ function collectFormData(activeUser) {
     }
 
     return data;
+}
+
+// ==================== HELPER: DATOS DE PAGO POR SITIO ====================
+
+/**
+ * Devuelve los datos de pago del sitio en un objeto plano para
+ * embeber en destination al guardar la reserva.
+ * Soporta paymentMethod: 'nequi' | 'bancolombia'
+ */
+function _getPaymentInfo(slug) {
+    const s = sitesCatalog[slug];
+    if (!s) return {};
+
+    if (s.paymentMethod === 'bancolombia') {
+        return {
+            paymentMethod: 'bancolombia',
+            bankAccount:   s.bankAccount  || '',
+            bankTitular:   s.bankTitular  || '',
+            bankCC:        s.bankCC       || '',
+            bankType:      s.bankType     || 'Cuenta de Ahorros'
+        };
+    }
+
+    // Nequi (default)
+    return {
+        paymentMethod: 'nequi',
+        nequiNumber:   s.nequiNumber  || '',
+        nequiTitular:  s.nequiTitular || ''
+    };
 }
 
 function generateBookingCode() {
@@ -1353,94 +1382,36 @@ async function sendToMongoDB(reservationData) {
 function showConfirmationModal(reservationData) {
     const slug      = reservationData.destination?.slug;
     const siteData  = slug ? sitesCatalog[slug] : null;
-    const nequiNum  = siteData?.nequiNumber  || reservationData.destination?.nequiNumber  || appState.selectedDestinationDb?.nequiNumber  || '';
-    const nequiName = siteData?.nequiTitular || reservationData.destination?.nequiTitular || appState.selectedDestinationDb?.nequiTitular || reservationData.destination?.name || '';
     const total     = reservationData.pricing?.total || 0;
     const code      = reservationData.bookingCode;
     const fmt       = new Intl.NumberFormat('es-CO').format(Math.round(total));
-    const hasNumber = nequiNum && nequiNum !== '';
 
-    // Reemplaza TODO el contenido del modal con un único bloque unificado
+    // ✅ Determinar bloque de pago según el método del sitio
+    const paymentMethod = siteData?.paymentMethod || reservationData.paymentMethod || 'nequi';
+    const paymentBlock  = paymentMethod === 'bancolombia'
+        ? _buildBancolombiaBlock(siteData, reservationData, fmt, code)
+        : _buildNequiBlock(siteData, reservationData, fmt, code);
+
     const modalContent = document.querySelector('#confirmModal .modal-content');
     if (!modalContent) return;
 
     modalContent.innerHTML = `
-        <!-- Encabezado: ícono + título -->
+        <!-- Encabezado -->
         <div style="text-align:center;margin-bottom:20px;">
             <div style="width:72px;height:72px;background:linear-gradient(135deg,#10b981,#059669);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 24px rgba(16,185,129,.3);">
                 <i class="fas fa-check" style="color:white;font-size:32px;"></i>
             </div>
             <h2 style="font-size:26px;font-weight:800;color:#195C33;margin:0 0 16px;">¡Reserva Registrada!</h2>
-
-            <!-- Código de reserva -->
             <div style="background:linear-gradient(135deg,#F4C400,#FFE347);padding:14px 20px;border-radius:14px;display:inline-block;margin-bottom:12px;">
                 <div style="font-size:11px;font-weight:700;color:#195C33;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Código de Reserva</div>
                 <div id="bookingCode" style="font-size:22px;font-weight:900;color:#195C33;font-family:monospace;letter-spacing:2px;">${code}</div>
             </div>
-
             <p style="font-size:13px;color:#6b7280;line-height:1.6;margin:0 0 4px;">
-                Realiza el pago por Nequi al número del sitio y envía el comprobante por WhatsApp para confirmar tu reserva.
+                Realiza el pago al sitio y envía el comprobante por WhatsApp para confirmar tu reserva.
             </p>
         </div>
 
-        <!-- Bloque Nequi -->
-        <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #86efac;border-radius:18px;padding:20px;margin-bottom:20px;">
-
-            <!-- Cabecera Nequi -->
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-                <div style="width:44px;height:44px;background:linear-gradient(135deg,#195C33,#0d3d20);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                    <i class="fas fa-mobile-alt" style="color:white;font-size:18px;"></i>
-                </div>
-                <div>
-                    <div style="font-size:15px;font-weight:800;color:#195C33;">Pago por Nequi</div>
-                    <div style="font-size:12px;color:#166534;">Transfiere para confirmar tu reserva</div>
-                </div>
-            </div>
-
-            <!-- Número Nequi -->
-            ${hasNumber ? `
-            <div style="background:white;border:2px solid #195C33;border-radius:14px;padding:18px;margin-bottom:14px;text-align:center;">
-                <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Número Nequi</div>
-                <div style="font-size:28px;font-weight:900;color:#195C33;letter-spacing:3px;font-family:monospace;">${nequiNum}</div>
-                ${nequiName ? `<div style="font-size:12px;color:#6b7280;margin-top:5px;">Titular: <strong style="color:#374151;">${nequiName}</strong></div>` : ''}
-                <button onclick="navigator.clipboard.writeText('${nequiNum}').then(()=>this.innerHTML='<i class=\\'fas fa-check\\'></i> ¡Copiado!').catch(()=>{})"
-                        style="margin-top:12px;padding:8px 18px;background:linear-gradient(135deg,#195C33,#0d3d20);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;">
-                    <i class="fas fa-copy"></i> Copiar número
-                </button>
-            </div>
-            ` : `
-            <div style="background:#fef9c3;border:1px solid #fde047;border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px;color:#854d0e;">
-                <i class="fas fa-exclamation-triangle"></i> El número Nequi de este sitio aún no está configurado. Contáctalos directamente.
-            </div>
-            `}
-
-            <!-- Total -->
-            <div style="background:white;border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-size:14px;font-weight:700;color:#374151;">💰 Total a transferir</span>
-                <span style="font-size:20px;font-weight:900;color:#195C33;">$${fmt} COP</span>
-            </div>
-
-            <!-- Instrucciones -->
-            <div style="background:white;border-radius:12px;padding:14px 16px;margin-bottom:14px;">
-                <div style="font-size:13px;font-weight:700;color:#374151;margin-bottom:10px;"><i class="fas fa-list-ol" style="color:#195C33;margin-right:6px;"></i>Instrucciones de pago</div>
-                <ol style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:7px;">
-                    <li style="font-size:12px;color:#4b5563;">Abre la app <strong>Nequi</strong> en tu celular.</li>
-                    <li style="font-size:12px;color:#4b5563;">Toca <strong>"Enviar plata"</strong> e ingresa el número <strong style="color:#195C33;font-family:monospace;">${nequiNum || '—'}</strong>.</li>
-                    <li style="font-size:12px;color:#4b5563;">Ingresa el valor exacto: <strong style="color:#195C33;">$${fmt} COP</strong>.</li>
-                    <li style="font-size:12px;color:#4b5563;">En el mensaje escribe tu código: <strong style="color:#195C33;">${code}</strong>.</li>
-                    <li style="font-size:12px;color:#4b5563;">Envía captura del comprobante por WhatsApp al sitio.</li>
-                </ol>
-            </div>
-
-            <!-- Aviso pendiente -->
-            <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:12px;padding:12px 14px;display:flex;gap:8px;align-items:flex-start;">
-                <i class="fas fa-info-circle" style="color:#d97706;font-size:15px;flex-shrink:0;margin-top:1px;"></i>
-                <p style="margin:0;font-size:11px;color:#92400e;line-height:1.6;">
-                    Tu reserva queda en estado <strong>pendiente</strong> hasta que el sitio confirme el pago.
-                    Recibirás confirmación por correo electrónico.
-                </p>
-            </div>
-        </div>
+        ${paymentBlock}
 
         <!-- Botones -->
         <div style="display:flex;gap:12px;">
@@ -1454,23 +1425,186 @@ function showConfirmationModal(reservationData) {
             </button>
         </div>`;
 
-    // Mostrar el modal
     const modal = document.getElementById('confirmModal');
     if (modal) modal.classList.add('active');
 }
 
-// Función legacy — ya no se usa pero se mantiene por compatibilidad
-function renderNequiPaymentBlock(nequiNumber, titular, total, bookingCode) {
-    // Todo se maneja en showConfirmationModal directamente
+// ──────────────────────────────────────────────────────────────────
+// BLOQUE DE PAGO: BANCOLOMBIA (cuenta de ahorros)
+// ──────────────────────────────────────────────────────────────────
+function _buildBancolombiaBlock(siteData, reservationData, fmt, code) {
+    const account  = siteData?.bankAccount  || reservationData.destination?.bankAccount  || '';
+    const titular  = siteData?.bankTitular  || reservationData.destination?.bankTitular  || '';
+    const cc       = siteData?.bankCC       || reservationData.destination?.bankCC       || '';
+    const bankType = siteData?.bankType     || reservationData.destination?.bankType     || 'Cuenta de Ahorros';
+    const hasAcc   = !!account;
+
+    return `
+    <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fcd34d;border-radius:18px;padding:20px;margin-bottom:20px;">
+
+        <!-- Cabecera Bancolombia -->
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <div style="width:44px;height:44px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-university" style="color:white;font-size:18px;"></i>
+            </div>
+            <div>
+                <div style="font-size:15px;font-weight:800;color:#92400e;">Pago por Bancolombia</div>
+                <div style="font-size:12px;color:#b45309;">${bankType} · Transfiere para confirmar tu reserva</div>
+            </div>
+        </div>
+
+        ${hasAcc ? `
+        <!-- Datos de la cuenta -->
+        <div style="background:white;border:2px solid #f59e0b;border-radius:14px;padding:18px;margin-bottom:14px;">
+            <div style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;text-align:center;">Datos de la cuenta</div>
+
+            <div style="display:grid;gap:10px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#fffbeb;border-radius:10px;">
+                    <span style="font-size:12px;color:#6b7280;font-weight:600;">Banco</span>
+                    <span style="font-size:14px;font-weight:800;color:#92400e;">Bancolombia</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#fffbeb;border-radius:10px;">
+                    <span style="font-size:12px;color:#6b7280;font-weight:600;">Tipo</span>
+                    <span style="font-size:14px;font-weight:700;color:#374151;">${bankType}</span>
+                </div>
+                <div style="padding:10px 14px;background:#fffbeb;border-radius:10px;">
+                    <div style="font-size:12px;color:#6b7280;font-weight:600;margin-bottom:6px;">Número de cuenta</div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                        <span style="font-size:22px;font-weight:900;color:#92400e;letter-spacing:3px;font-family:monospace;">${account}</span>
+                        <button onclick="navigator.clipboard.writeText('${account}').then(()=>this.innerHTML='<i class=\\'fas fa-check\\'></i>').catch(()=>{})"
+                                style="padding:6px 12px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0;">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+                </div>
+                ${titular ? `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#fffbeb;border-radius:10px;">
+                    <span style="font-size:12px;color:#6b7280;font-weight:600;">Titular</span>
+                    <span style="font-size:13px;font-weight:700;color:#374151;">${titular}</span>
+                </div>` : ''}
+                ${cc ? `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#fffbeb;border-radius:10px;">
+                    <span style="font-size:12px;color:#6b7280;font-weight:600;">Cédula titular</span>
+                    <span style="font-size:13px;font-weight:700;color:#374151;font-family:monospace;">${cc}</span>
+                </div>` : ''}
+            </div>
+        </div>
+        ` : `
+        <div style="background:#fef9c3;border:1px solid #fde047;border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px;color:#854d0e;">
+            <i class="fas fa-exclamation-triangle"></i> Los datos bancarios de este sitio aún no están configurados. Contáctalos directamente.
+        </div>
+        `}
+
+        <!-- Total -->
+        <div style="background:white;border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:14px;font-weight:700;color:#374151;">💰 Total a transferir</span>
+            <span style="font-size:20px;font-weight:900;color:#92400e;">$${fmt} COP</span>
+        </div>
+
+        <!-- Instrucciones -->
+        <div style="background:white;border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+            <div style="font-size:13px;font-weight:700;color:#374151;margin-bottom:10px;">
+                <i class="fas fa-list-ol" style="color:#f59e0b;margin-right:6px;"></i>Instrucciones de pago
+            </div>
+            <ol style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:7px;">
+                <li style="font-size:12px;color:#4b5563;">Abre tu app bancaria o sucursal virtual <strong>Bancolombia</strong>.</li>
+                <li style="font-size:12px;color:#4b5563;">Ve a <strong>"Transferencias"</strong> y selecciona transferencia a otra cuenta Bancolombia.</li>
+                <li style="font-size:12px;color:#4b5563;">Ingresa el número de cuenta: <strong style="color:#92400e;font-family:monospace;">${account || '—'}</strong>.</li>
+                <li style="font-size:12px;color:#4b5563;">Ingresa el valor exacto: <strong style="color:#92400e;">$${fmt} COP</strong>.</li>
+                <li style="font-size:12px;color:#4b5563;">En el mensaje / referencia escribe tu código: <strong style="color:#92400e;">${code}</strong>.</li>
+                <li style="font-size:12px;color:#4b5563;">Envía captura del comprobante por WhatsApp al sitio.</li>
+            </ol>
+        </div>
+
+        <!-- Aviso pendiente -->
+        <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:12px;padding:12px 14px;display:flex;gap:8px;align-items:flex-start;">
+            <i class="fas fa-info-circle" style="color:#d97706;font-size:15px;flex-shrink:0;margin-top:1px;"></i>
+            <p style="margin:0;font-size:11px;color:#92400e;line-height:1.6;">
+                Tu reserva queda en estado <strong>pendiente</strong> hasta que el sitio confirme el pago.
+                Recibirás confirmación por correo electrónico.
+            </p>
+        </div>
+    </div>`;
 }
 
+// ──────────────────────────────────────────────────────────────────
+// BLOQUE DE PAGO: NEQUI (número de celular)
+// ──────────────────────────────────────────────────────────────────
+function _buildNequiBlock(siteData, reservationData, fmt, code) {
+    const nequiNum  = siteData?.nequiNumber  || reservationData.destination?.nequiNumber  || '';
+    const nequiName = siteData?.nequiTitular || reservationData.destination?.nequiTitular || reservationData.destination?.name || '';
+    const hasNumber = !!nequiNum;
+
+    return `
+    <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #86efac;border-radius:18px;padding:20px;margin-bottom:20px;">
+
+        <!-- Cabecera Nequi -->
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <div style="width:44px;height:44px;background:linear-gradient(135deg,#195C33,#0d3d20);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-mobile-alt" style="color:white;font-size:18px;"></i>
+            </div>
+            <div>
+                <div style="font-size:15px;font-weight:800;color:#195C33;">Pago por Nequi</div>
+                <div style="font-size:12px;color:#166534;">Transfiere para confirmar tu reserva</div>
+            </div>
+        </div>
+
+        ${hasNumber ? `
+        <div style="background:white;border:2px solid #195C33;border-radius:14px;padding:18px;margin-bottom:14px;text-align:center;">
+            <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Número Nequi</div>
+            <div style="font-size:28px;font-weight:900;color:#195C33;letter-spacing:3px;font-family:monospace;">${nequiNum}</div>
+            ${nequiName ? `<div style="font-size:12px;color:#6b7280;margin-top:5px;">Titular: <strong style="color:#374151;">${nequiName}</strong></div>` : ''}
+            <button onclick="navigator.clipboard.writeText('${nequiNum}').then(()=>this.innerHTML='<i class=\\'fas fa-check\\'></i> ¡Copiado!').catch(()=>{})"
+                    style="margin-top:12px;padding:8px 18px;background:linear-gradient(135deg,#195C33,#0d3d20);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;">
+                <i class="fas fa-copy"></i> Copiar número
+            </button>
+        </div>
+        ` : `
+        <div style="background:#fef9c3;border:1px solid #fde047;border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px;color:#854d0e;">
+            <i class="fas fa-exclamation-triangle"></i> El número Nequi de este sitio aún no está configurado. Contáctalos directamente.
+        </div>
+        `}
+
+        <!-- Total -->
+        <div style="background:white;border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:14px;font-weight:700;color:#374151;">💰 Total a transferir</span>
+            <span style="font-size:20px;font-weight:900;color:#195C33;">$${fmt} COP</span>
+        </div>
+
+        <!-- Instrucciones -->
+        <div style="background:white;border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+            <div style="font-size:13px;font-weight:700;color:#374151;margin-bottom:10px;">
+                <i class="fas fa-list-ol" style="color:#195C33;margin-right:6px;"></i>Instrucciones de pago
+            </div>
+            <ol style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:7px;">
+                <li style="font-size:12px;color:#4b5563;">Abre la app <strong>Nequi</strong> en tu celular.</li>
+                <li style="font-size:12px;color:#4b5563;">Toca <strong>"Enviar plata"</strong> e ingresa el número <strong style="color:#195C33;font-family:monospace;">${nequiNum || '—'}</strong>.</li>
+                <li style="font-size:12px;color:#4b5563;">Ingresa el valor exacto: <strong style="color:#195C33;">$${fmt} COP</strong>.</li>
+                <li style="font-size:12px;color:#4b5563;">En el mensaje escribe tu código: <strong style="color:#195C33;">${code}</strong>.</li>
+                <li style="font-size:12px;color:#4b5563;">Envía captura del comprobante por WhatsApp al sitio.</li>
+            </ol>
+        </div>
+
+        <!-- Aviso pendiente -->
+        <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:12px;padding:12px 14px;display:flex;gap:8px;align-items:flex-start;">
+            <i class="fas fa-info-circle" style="color:#d97706;font-size:15px;flex-shrink:0;margin-top:1px;"></i>
+            <p style="margin:0;font-size:11px;color:#92400e;line-height:1.6;">
+                Tu reserva queda en estado <strong>pendiente</strong> hasta que el sitio confirme el pago.
+                Recibirás confirmación por correo electrónico.
+            </p>
+        </div>
+    </div>`;
+}
 
 // ==================== BLOQUE DE PAGO EN EL FORMULARIO ====================
 
-function renderFormNequiInfo(slug) {
-    const siteData  = slug ? sitesCatalog[slug] : null;
-    const nequiNum  = siteData?.nequiNumber  || '';
-    const nequiName = siteData?.nequiTitular || '';
+/**
+ * ✅ Reemplaza renderFormNequiInfo() — ahora detecta automáticamente
+ *    si el sitio usa Nequi o Bancolombia y muestra el bloque correcto.
+ */
+function renderFormPaymentInfo(slug) {
+    const siteData = slug ? sitesCatalog[slug] : null;
+    const method   = siteData?.paymentMethod || 'nequi';
 
     let block = document.getElementById('form-nequi-info');
     if (!block) {
@@ -1481,48 +1615,138 @@ function renderFormNequiInfo(slug) {
         paymentSection.insertAdjacentElement('beforebegin', block);
     }
 
-    if (!nequiNum) {
-        block.innerHTML = `
-            <div class="form-section">
-                <h2 class="section-title">
-                    <i class="fas fa-mobile-alt" style="font-size:20px;color:#F4C400;width:32px;height:32px;background:rgba(244,196,0,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;"></i>
-                    Pago por Nequi
-                </h2>
-                <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:12px;padding:16px;font-size:14px;color:#92400e;">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <strong>Número Nequi no configurado aún.</strong>
-                    El administrador del sitio deberá agregar el número. Por ahora continúa con tu reserva y contacta al sitio para coordinar el pago.
-                </div>
-            </div>`;
-        return;
+    if (method === 'bancolombia') {
+        block.innerHTML = _formBancolombiaBlock(siteData);
+    } else {
+        block.innerHTML = _formNequiBlock(siteData);
+    }
+}
+
+// Mantener alias para compatibilidad con código anterior que pudiera llamar a esta función
+function renderFormNequiInfo(slug) {
+    renderFormPaymentInfo(slug);
+}
+
+function _formBancolombiaBlock(siteData) {
+    const account  = siteData?.bankAccount  || '';
+    const titular  = siteData?.bankTitular  || '';
+    const cc       = siteData?.bankCC       || '';
+    const bankType = siteData?.bankType     || 'Cuenta de Ahorros';
+
+    if (!account) {
+        return `
+        <div class="form-section">
+            <h2 class="section-title">
+                <i class="fas fa-university" style="font-size:20px;color:#F4C400;width:32px;height:32px;background:rgba(244,196,0,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;"></i>
+                Pago por Bancolombia
+            </h2>
+            <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:12px;padding:16px;font-size:14px;color:#92400e;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Datos bancarios no configurados aún.</strong>
+                Continúa con tu reserva y contacta al sitio para coordinar el pago.
+            </div>
+        </div>`;
     }
 
-    block.innerHTML = `
+    return `
+    <div class="form-section">
+        <h2 class="section-title">
+            <i class="fas fa-university" style="font-size:20px;color:#F4C400;width:32px;height:32px;background:rgba(244,196,0,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;"></i>
+            Pago por Bancolombia
+        </h2>
+        <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fcd34d;border-radius:16px;padding:20px;">
+            <p style="font-size:14px;color:#92400e;margin:0 0 16px;">
+                El pago se realiza directamente al sitio vía transferencia bancaria <strong>Bancolombia</strong>.
+            </p>
+
+            <div style="background:white;border:2px solid #f59e0b;border-radius:14px;padding:18px;margin-bottom:14px;">
+                <div style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;text-align:center;">Datos bancarios</div>
+                <div style="display:grid;gap:8px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#fffbeb;border-radius:8px;">
+                        <span style="font-size:12px;color:#6b7280;font-weight:600;">Banco</span>
+                        <span style="font-size:13px;font-weight:800;color:#92400e;">Bancolombia</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#fffbeb;border-radius:8px;">
+                        <span style="font-size:12px;color:#6b7280;font-weight:600;">Tipo de cuenta</span>
+                        <span style="font-size:13px;font-weight:700;color:#374151;">${bankType}</span>
+                    </div>
+                    <div style="padding:8px 12px;background:#fffbeb;border-radius:8px;">
+                        <div style="font-size:12px;color:#6b7280;font-weight:600;margin-bottom:6px;">Número de cuenta</div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                            <span style="font-size:20px;font-weight:900;color:#92400e;letter-spacing:2px;font-family:monospace;">${account}</span>
+                            <button type="button"
+                                    onclick="navigator.clipboard.writeText('${account}').then(()=>this.innerHTML='<i class=\\'fas fa-check\\'></i> ¡Copiado!').catch(()=>{})"
+                                    style="padding:6px 14px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0;">
+                                <i class="fas fa-copy"></i> Copiar
+                            </button>
+                        </div>
+                    </div>
+                    ${titular ? `
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#fffbeb;border-radius:8px;">
+                        <span style="font-size:12px;color:#6b7280;font-weight:600;">Titular</span>
+                        <span style="font-size:13px;font-weight:700;color:#374151;">${titular}</span>
+                    </div>` : ''}
+                    ${cc ? `
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#fffbeb;border-radius:8px;">
+                        <span style="font-size:12px;color:#6b7280;font-weight:600;">Cédula titular</span>
+                        <span style="font-size:13px;font-weight:700;color:#374151;font-family:monospace;">${cc}</span>
+                    </div>` : ''}
+                </div>
+            </div>
+
+            <div style="font-size:12px;color:#92400e;background:white;border-radius:10px;padding:12px;line-height:1.7;">
+                <strong>¿Cuándo pago?</strong> Una vez envíes la reserva, realiza la transferencia a la cuenta indicada.
+                Escribe tu código de reserva en la referencia y envía el comprobante por WhatsApp al sitio.
+            </div>
+        </div>
+    </div>`;
+}
+
+function _formNequiBlock(siteData) {
+    const nequiNum  = siteData?.nequiNumber  || '';
+    const nequiName = siteData?.nequiTitular || '';
+
+    if (!nequiNum) {
+        return `
         <div class="form-section">
             <h2 class="section-title">
                 <i class="fas fa-mobile-alt" style="font-size:20px;color:#F4C400;width:32px;height:32px;background:rgba(244,196,0,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;"></i>
                 Pago por Nequi
             </h2>
-            <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #86efac;border-radius:16px;padding:20px;">
-                <p style="font-size:14px;color:#166534;margin:0 0 16px;">
-                    El pago se realiza directamente al sitio vía Nequi. Solo se acepta este método.
-                </p>
-                <div style="background:white;border:2px solid #195C33;border-radius:14px;padding:18px;text-align:center;margin-bottom:14px;">
-                    <div style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Número Nequi del sitio</div>
-                    <div style="font-size:28px;font-weight:900;color:#195C33;letter-spacing:3px;font-family:monospace;">${nequiNum}</div>
-                    ${nequiName ? `<div style="font-size:13px;color:#6b7280;margin-top:4px;">Titular: <strong>${nequiName}</strong></div>` : ''}
-                    <button type="button"
-                            onclick="navigator.clipboard.writeText('${nequiNum}').then(()=>this.innerHTML='<i class=\\'fas fa-check\\'></i> ¡Copiado!').catch(()=>{})"
-                            style="margin-top:12px;padding:7px 18px;background:linear-gradient(135deg,#195C33,#0d3d20);color:white;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;">
-                        <i class="fas fa-copy"></i> Copiar número
-                    </button>
-                </div>
-                <div style="font-size:12px;color:#166534;background:white;border-radius:10px;padding:12px;line-height:1.7;">
-                    <strong>¿Cuándo pago?</strong> Una vez envíes la reserva, realiza la transferencia por Nequi al número indicado.
-                    Escribe tu código de reserva en el mensaje y envía el comprobante por WhatsApp al sitio.
-                </div>
+            <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:12px;padding:16px;font-size:14px;color:#92400e;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Número Nequi no configurado aún.</strong>
+                El administrador del sitio deberá agregar el número. Por ahora continúa con tu reserva y contacta al sitio para coordinar el pago.
             </div>
         </div>`;
+    }
+
+    return `
+    <div class="form-section">
+        <h2 class="section-title">
+            <i class="fas fa-mobile-alt" style="font-size:20px;color:#F4C400;width:32px;height:32px;background:rgba(244,196,0,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;"></i>
+            Pago por Nequi
+        </h2>
+        <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #86efac;border-radius:16px;padding:20px;">
+            <p style="font-size:14px;color:#166534;margin:0 0 16px;">
+                El pago se realiza directamente al sitio vía Nequi. Solo se acepta este método.
+            </p>
+            <div style="background:white;border:2px solid #195C33;border-radius:14px;padding:18px;text-align:center;margin-bottom:14px;">
+                <div style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Número Nequi del sitio</div>
+                <div style="font-size:28px;font-weight:900;color:#195C33;letter-spacing:3px;font-family:monospace;">${nequiNum}</div>
+                ${nequiName ? `<div style="font-size:13px;color:#6b7280;margin-top:4px;">Titular: <strong>${nequiName}</strong></div>` : ''}
+                <button type="button"
+                        onclick="navigator.clipboard.writeText('${nequiNum}').then(()=>this.innerHTML='<i class=\\'fas fa-check\\'></i> ¡Copiado!').catch(()=>{})"
+                        style="margin-top:12px;padding:7px 18px;background:linear-gradient(135deg,#195C33,#0d3d20);color:white;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;">
+                    <i class="fas fa-copy"></i> Copiar número
+                </button>
+            </div>
+            <div style="font-size:12px;color:#166534;background:white;border-radius:10px;padding:12px;line-height:1.7;">
+                <strong>¿Cuándo pago?</strong> Una vez envíes la reserva, realiza la transferencia por Nequi al número indicado.
+                Escribe tu código de reserva en el mensaje y envía el comprobante por WhatsApp al sitio.
+            </div>
+        </div>
+    </div>`;
 }
 
 // ==================== HELPERS ====================
@@ -1580,4 +1804,4 @@ function injectCalendarStyles() {
     document.head.appendChild(s);
 }
 
-console.log('🚀 reservations.js cargado — versión unificada');
+console.log('🚀 reservations.js cargado — versión unificada con soporte Nequi + Bancolombia');
