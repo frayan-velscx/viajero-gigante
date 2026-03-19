@@ -34,6 +34,15 @@ app.use('/api/reviews',  require('./routes/reviews'));
 app.use('/api/users/photo', require('./routes/Photo'));
 app.use('/api/users',    require('./routes/users')); 
 app.use('/api/settings', require('./routes/settings'));
+// ── Servir frontend estático ──────────────────────────────────────────────────
+const frontendPath = path.join(__dirname, '..', '..', 'frontend');
+app.use(express.static(frontendPath));
+app.use('/scripts', express.static(path.join(frontendPath, 'scripts')));
+app.use('/styles',  express.static(path.join(frontendPath, 'styles')));
+app.use('/assets',  express.static(path.join(frontendPath, 'assets')));
+app.get('/', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'pages', 'index.html'));
+});
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
     res.json({
