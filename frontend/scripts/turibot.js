@@ -4,7 +4,9 @@
 //  ✅ Planificador de itinerarios personalizados
 // ═══════════════════════════════════════════════════════════
 
-const TURIBOT_API_URL = "http://localhost:5000/api/chat"; // ← ajusta si tu server corre en otro puerto
+const TURIBOT_API_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:5000/api/chat'
+    : 'https://viajero-gigante.onrender.com/api/chat';
 
 // ─────────────────────────────────────────────────────────
 //  OBTENER DATOS DEL USUARIO LOGUEADO (desde AuthAPI)
