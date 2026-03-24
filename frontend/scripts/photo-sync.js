@@ -19,7 +19,7 @@
     // ── URL base del backend ──────────────────────────────────────────────────
     const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://localhost:5000'
-        : 'https://viajero-gigante.onrender.com';
+        : 'https://backend-gigante.onrender.com';
 
     // ── Leer token JWT del localStorage ──────────────────────────────────────
     // Tu authController devuelve { token, user } → el frontend lo guarda.

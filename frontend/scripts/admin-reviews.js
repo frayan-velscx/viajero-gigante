@@ -9,7 +9,7 @@
 
     const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://localhost:5000'
-        : 'https://viajero-gigante.onrender.com') + '/api';
+        : 'https://backend-gigante.onrender.com') + '/api';
     const ITEMS_PER_PAGE = 9;
 
     // Estado interno del módulo

@@ -23,7 +23,7 @@
     // ── URL del backend según entorno ─────────────────────────────
     const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://localhost:5000'
-        : 'https://viajero-gigante.onrender.com') + '/api';
+        : 'https://backend-gigante.onrender.com') + '/api';
 
     // ── Valores de fallback (se usan si la API falla) ─────────────
     const FALLBACK = {
