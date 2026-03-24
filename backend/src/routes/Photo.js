@@ -5,12 +5,11 @@
 const express = require('express');
 const router  = express.Router();
 const path    = require('path');
-const fs      = require('fs');
 
-// Rutas exactas según la estructura del proyecto
 const { protect }  = require('../middleware/auth');
 const upload       = require('../middleware/upload');
 const User         = require('../models/User');
+const admin        = require('../config/firebase');
 
 console.log('📸 Inicializando rutas de foto de perfil');
 
@@ -34,21 +33,30 @@ router.post('/', protect, upload.single('photo'), async (req, res) => {
             });
         }
 
-        // URL pública de la imagen
-        const photoURL = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+        // Subir a Firebase Storage
+        const ext      = path.extname(req.file.originalname).toLowerCase() || '.jpg';
+        const filename = `photos/photo_${userId}_${Date.now()}${ext}`;
+        const bucket   = admin.storage().bucket();
+        const fileRef  = bucket.file(filename);
+
+        await fileRef.save(req.file.buffer, {
+            metadata: { contentType: req.file.mimetype },
+            public: true
+        });
+
+        const photoURL = `https://storage.googleapis.com/${bucket.name}/${filename}`;
         console.log(`   📎 Nueva URL: ${photoURL}`);
 
-        // Borrar la foto anterior del disco si existe
+        // Borrar la foto anterior de Firebase Storage si existe
         const userBefore = await User.findById(userId).select('photoURL avatar');
         const oldURL = userBefore?.photoURL || userBefore?.avatar;
-        if (oldURL && oldURL.includes('/uploads/')) {
-            const oldFilename = oldURL.split('/uploads/')[1];
-            if (oldFilename) {
-                const oldPath = path.join(__dirname, '..', '..', 'uploads', oldFilename);
-                if (fs.existsSync(oldPath)) {
-                    fs.unlinkSync(oldPath);
-                    console.log(`   🗑️ Foto anterior eliminada: ${oldFilename}`);
-                }
+        if (oldURL && oldURL.includes('storage.googleapis.com')) {
+            const oldPath = oldURL.split(`${bucket.name}/`)[1];
+            if (oldPath) {
+                try {
+                    await bucket.file(oldPath).delete();
+                    console.log(`   🗑️ Foto anterior eliminada: ${oldPath}`);
+                } catch (_) {}
             }
         }
 
@@ -99,16 +107,16 @@ router.delete('/', protect, async (req, res) => {
             });
         }
 
-        // Borrar archivo del disco
+        // Borrar archivo de Firebase Storage
         const oldURL = user.photoURL || user.avatar;
-        if (oldURL && oldURL.includes('/uploads/')) {
-            const filename = oldURL.split('/uploads/')[1];
-            if (filename) {
-                const filePath = path.join(__dirname, '..', '..', 'uploads', filename);
-                if (fs.existsSync(filePath)) {
-                    fs.unlinkSync(filePath);
-                    console.log(`   🗑️ Archivo eliminado: ${filename}`);
-                }
+        if (oldURL && oldURL.includes('storage.googleapis.com')) {
+            const bucket  = admin.storage().bucket();
+            const oldPath = oldURL.split(`${bucket.name}/`)[1];
+            if (oldPath) {
+                try {
+                    await bucket.file(oldPath).delete();
+                    console.log(`   🗑️ Archivo eliminado: ${oldPath}`);
+                } catch (_) {}
             }
         }
 
