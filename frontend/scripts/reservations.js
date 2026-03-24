@@ -206,7 +206,9 @@ const availabilityState = {
 // ==================== API BASE URL ====================
 
 const API_BASE = (typeof window.API_URL !== 'undefined' ? window.API_URL : '')
-              || 'http://localhost:5000/api';
+    || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:5000'
+        : 'https://viajero-gigante.onrender.com') + '/api';
 
 // ==================== INICIALIZACIÓN ====================
 
