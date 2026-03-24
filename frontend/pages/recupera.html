@@ -993,7 +993,9 @@ footer{padding:clamp(32px,5vw,60px) clamp(16px,4vw,40px) clamp(16px,3vw,28px);}
 
     // ─── API base ───────────────────────────────────────────────
     // ⚠️ Cambia esta URL si tu backend corre en otro puerto/host
-    const API = 'http://localhost:5000/api/auth';
+    const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000'
+    : 'https://backend-gigante.onrender.com') + '/api/auth';
 
     // ─── Estado de la sesión de recuperación ───────────────────
     let currentEmail = '';

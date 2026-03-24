@@ -2443,7 +2443,9 @@ if (initialsEl) {
     let currentMapType = 'roadmap';
 
     // ── Ajusta este valor si tu backend corre en otro puerto ──
-    const API_MAPA = 'http://localhost:5000/api/sitios/mapa/lugares';
+   const API_MAPA = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000'
+    : 'https://backend-gigante.onrender.com') + '/api/sitios/mapa/lugares';
 
     // ── initMap: callback de Google Maps ─────────────────────
     async function initMap() {

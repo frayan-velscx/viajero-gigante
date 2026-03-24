@@ -844,7 +844,9 @@ footer{padding:clamp(32px,5vw,60px) clamp(16px,4vw,40px) clamp(16px,3vw,28px);}
 
     <script>
         // ==================== CONFIGURACIÓN ====================
-        const API_BASE = window.API_URL || 'http://localhost:5000/api';
+  const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/api'
+    : 'https://backend-gigante.onrender.com/api';
 
         // ==================== VARIABLES GLOBALES ====================
         let allReservations = [];
