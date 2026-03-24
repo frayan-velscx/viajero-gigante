@@ -19,7 +19,8 @@ const serviceAccount = {
 
 if (!admin.apps.length) {
     admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount)
+        credential: admin.credential.cert(serviceAccount),
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || 'gigante-viajero-55fef.appspot.com'
     });
 }
 

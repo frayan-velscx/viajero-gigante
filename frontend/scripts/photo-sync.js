@@ -17,11 +17,9 @@
     'use strict';
 
     // ── URL base del backend ──────────────────────────────────────────────────
-    // Si el frontend y backend están en el mismo origen, window.location.origin funciona.
-    // Si el backend corre en otro puerto (ej: 5000), cámbialo:
-    //   const API_BASE = 'http://localhost:5000';
-    // Backend siempre en puerto 5000 (independiente del Live Server)
-    const API_BASE = 'http://localhost:5000';
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:5000'
+        : 'https://backend-gigante.onrender.com';
 
     // ── Leer token JWT del localStorage ──────────────────────────────────────
     // Tu authController devuelve { token, user } → el frontend lo guarda.

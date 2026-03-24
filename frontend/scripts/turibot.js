@@ -6,7 +6,7 @@
 
 const TURIBOT_API_URL = window.location.hostname === 'localhost'
     ? 'http://localhost:5000/api/chat'
-    : 'https://viajero-gigante.onrender.com/api/chat';
+    : 'https://backend-gigante.onrender.com/api/chat';
 
 // ─────────────────────────────────────────────────────────
 //  OBTENER DATOS DEL USUARIO LOGUEADO (desde AuthAPI)
