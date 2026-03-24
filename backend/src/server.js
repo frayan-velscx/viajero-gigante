@@ -6,6 +6,7 @@ const express = require('express');
 const cors    = require('cors');
 const dotenv  = require('dotenv');
 const path    = require('path');
+const fs      = require('fs');
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
@@ -35,11 +36,28 @@ app.use('/api/users/photo', require('./routes/Photo'));
 app.use('/api/users',    require('./routes/users')); 
 app.use('/api/settings', require('./routes/settings'));
 // ── Servir frontend estático ──────────────────────────────────────────────────
-const frontendPath = path.join(__dirname, '..', '..', 'frontend');
-app.use(express.static(frontendPath));
-app.use('/scripts', express.static(path.join(frontendPath, 'scripts')));
-app.use('/styles',  express.static(path.join(frontendPath, 'styles')));
-app.use('/assets',  express.static(path.join(frontendPath, 'assets')));
+const frontendPath = path.resolve(__dirname, '..', '..', 'frontend');
+
+// Log de diagnóstico — visible en los logs de Render
+console.log('📁 frontendPath:', frontendPath);
+console.log('📁 frontend existe:', fs.existsSync(frontendPath));
+console.log('📁 video existe:', fs.existsSync(path.join(frontendPath, 'assets', 'video', 'VID_20260310143913.mp4')));
+
+// MIME types explícitos — soluciona el bloqueo "text/plain" en producción
+const staticOptions = {
+    setHeaders: (res, filePath) => {
+        const ext = path.extname(filePath).toLowerCase();
+        if (ext === '.js')   res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+        if (ext === '.css')  res.setHeader('Content-Type', 'text/css; charset=utf-8');
+        if (ext === '.html') res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        if (ext === '.json') res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    }
+};
+
+app.use(express.static(frontendPath, staticOptions));
+app.use('/scripts', express.static(path.join(frontendPath, 'scripts'), staticOptions));
+app.use('/styles',  express.static(path.join(frontendPath, 'styles'),  staticOptions));
+app.use('/assets',  express.static(path.join(frontendPath, 'assets'),  staticOptions));
 app.get('/', (req, res) => {
     res.sendFile(path.join(frontendPath, 'pages', 'index.html'));
 });
