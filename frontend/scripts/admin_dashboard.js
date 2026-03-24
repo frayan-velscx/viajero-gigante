@@ -17,7 +17,7 @@ const adminState = {
         dateFrom: null,
         dateTo:   null
     },
-    dashboardPeriod: 'week',
+    dashboardPeriod: 'month',
     charts: {},
     updateTimeout: null,
     listenersAttached: false,
