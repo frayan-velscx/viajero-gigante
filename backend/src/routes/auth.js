@@ -6,7 +6,8 @@
 const express    = require('express');
 const router     = express.Router();
 const bcrypt     = require('bcrypt');
-const { transporter } = require('../config/Nodemailer');
+const { Resend } = require('resend');           // ← RESEND en lugar de nodemailer
+const resend     = new Resend(process.env.RESEND_API_KEY);
 const admin      = require('../config/firebase');
 
 const { authLimiter } = require('../middleware/rateLimiter');
@@ -22,12 +23,6 @@ const {
 const { register, login, getProfile, updateProfile } = require('../controllers/authController');
 
 const User = require('../models/User');
-
-
-// =============================================
-// NODEMAILER TRANSPORTER
-// =============================================
-
 
 // =============================================
 // STORE DE CÓDIGOS EN MEMORIA
@@ -69,7 +64,7 @@ router.post('/login',
 );
 
 // =============================================
-// ✨ NUEVO: LOGIN CON GOOGLE → GUARDA EN MONGODB
+// ✨ LOGIN CON GOOGLE → GUARDA EN MONGODB
 // =============================================
 
 /**
@@ -115,7 +110,6 @@ router.post('/google', async (req, res) => {
             user.authProvider    = 'google';
             user.isEmailVerified = true;
             user.lastLogin       = new Date();
-            // Actualizar nombre solo si estaba vacío o era genérico
             if (!user.firstName || user.firstName === 'Usuario') user.firstName = firstName;
             if (!user.lastName  || user.lastName  === '.')       user.lastName  = lastName;
             await user.save();
@@ -176,7 +170,7 @@ router.put('/profile', updateProfile);
 
 /**
  * @route   POST /api/auth/send-reset-code
- * @desc    Genera y envía un código de 6 dígitos al correo
+ * @desc    Genera y envía un código de 6 dígitos al correo via Resend
  * @access  Público
  */
 router.post('/send-reset-code', async (req, res) => {
@@ -190,71 +184,74 @@ router.post('/send-reset-code', async (req, res) => {
     const expiresAt = Date.now() + CODE_EXPIRY;
     codesStore.set(email, { code, expiresAt, attempts: 0, verified: false });
 
-    const mailOptions = {
-        from: `"Gigante Viagero" <${process.env.EMAIL_FROM}>`,
-        to:   email,
-        subject: '🔐 Tu código de recuperación — Gigante Viagero',
-        html: `
-        <body style="margin:0;padding:0;background:#f3f4f6;font-family:'Segoe UI',Arial,sans-serif;">
-          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:40px 20px;">
-            <tr><td align="center">
-              <table width="540" cellpadding="0" cellspacing="0"
-                style="background:white;border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.08);">
+    const htmlContent = `
+    <body style="margin:0;padding:0;background:#f3f4f6;font-family:'Segoe UI',Arial,sans-serif;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:40px 20px;">
+        <tr><td align="center">
+          <table width="540" cellpadding="0" cellspacing="0"
+            style="background:white;border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.08);">
 
-                <tr>
-                  <td style="background:linear-gradient(135deg,#195C33,#0d3d20);padding:36px 40px;text-align:center;">
-                    <p style="margin:0;color:white;font-size:26px;font-weight:800;">🌎 Gigante Viagero</p>
-                    <p style="margin:8px 0 0;color:rgba(255,255,255,0.75);font-size:14px;">Recuperación de contraseña</p>
-                  </td>
-                </tr>
+            <tr>
+              <td style="background:linear-gradient(135deg,#195C33,#0d3d20);padding:36px 40px;text-align:center;">
+                <p style="margin:0;color:white;font-size:26px;font-weight:800;">🌎 Gigante Viagero</p>
+                <p style="margin:8px 0 0;color:rgba(255,255,255,0.75);font-size:14px;">Recuperación de contraseña</p>
+              </td>
+            </tr>
 
-                <tr>
-                  <td style="padding:44px 48px;">
-                    <p style="margin:0 0 12px;color:#1f2937;font-size:17px;font-weight:700;">¡Hola! 👋</p>
-                    <p style="margin:0 0 28px;color:#4b5563;font-size:15px;line-height:1.7;">
-                      Recibimos una solicitud para restablecer tu contraseña.<br>
-                      Ingresa este código en la página de recuperación:
+            <tr>
+              <td style="padding:44px 48px;">
+                <p style="margin:0 0 12px;color:#1f2937;font-size:17px;font-weight:700;">¡Hola! 👋</p>
+                <p style="margin:0 0 28px;color:#4b5563;font-size:15px;line-height:1.7;">
+                  Recibimos una solicitud para restablecer tu contraseña.<br>
+                  Ingresa este código en la página de recuperación:
+                </p>
+
+                <div style="text-align:center;margin:0 0 28px;">
+                  <div style="display:inline-block;background:#f0fdf4;border:2px solid #bbf7d0;border-radius:16px;padding:24px 48px;">
+                    <p style="margin:0;font-size:52px;font-weight:900;letter-spacing:12px;color:#195C33;font-family:monospace;">${code}</p>
+                  </div>
+                </div>
+
+                <table width="100%" cellpadding="0" cellspacing="0"
+                  style="background:#fefce8;border-radius:12px;border:1px solid #fde68a;margin-bottom:24px;">
+                  <tr><td style="padding:16px 20px;">
+                    <p style="margin:0;color:#92400e;font-size:13px;line-height:1.9;">
+                      ⏰ <strong>Este código expira en 10 minutos.</strong><br>
+                      🔒 Si no solicitaste este cambio, ignora este correo.<br>
+                      🚫 Nunca compartas este código con nadie.
                     </p>
+                  </td></tr>
+                </table>
 
-                    <div style="text-align:center;margin:0 0 28px;">
-                      <div style="display:inline-block;background:#f0fdf4;border:2px solid #bbf7d0;border-radius:16px;padding:24px 48px;">
-                        <p style="margin:0;font-size:52px;font-weight:900;letter-spacing:12px;color:#195C33;font-family:monospace;">${code}</p>
-                      </div>
-                    </div>
+                <p style="margin:0;color:#9ca3af;font-size:12px;">Este correo es automático, no respondas a este mensaje.</p>
+              </td>
+            </tr>
 
-                    <table width="100%" cellpadding="0" cellspacing="0"
-                      style="background:#fefce8;border-radius:12px;border:1px solid #fde68a;margin-bottom:24px;">
-                      <tr><td style="padding:16px 20px;">
-                        <p style="margin:0;color:#92400e;font-size:13px;line-height:1.9;">
-                          ⏰ <strong>Este código expira en 10 minutos.</strong><br>
-                          🔒 Si no solicitaste este cambio, ignora este correo.<br>
-                          🚫 Nunca compartas este código con nadie.
-                        </p>
-                      </td></tr>
-                    </table>
+            <tr>
+              <td style="background:#f9fafb;padding:20px 40px;border-top:1px solid #e5e7eb;text-align:center;">
+                <p style="margin:0;color:#9ca3af;font-size:12px;">© ${new Date().getFullYear()} Gigante Viagero — Gigante, Huila, Colombia</p>
+              </td>
+            </tr>
 
-                    <p style="margin:0;color:#9ca3af;font-size:12px;">Este correo es automático, no respondas a este mensaje.</p>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td style="background:#f9fafb;padding:20px 40px;border-top:1px solid #e5e7eb;text-align:center;">
-                    <p style="margin:0;color:#9ca3af;font-size:12px;">© ${new Date().getFullYear()} Gigante Viagero — Gigante, Huila, Colombia</p>
-                  </td>
-                </tr>
-
-              </table>
-            </td></tr>
           </table>
-        </body>`
-    };
+        </td></tr>
+      </table>
+    </body>`;
 
     try {
-        await transporter.sendMail(mailOptions);
+        const { error: mailError } = await resend.emails.send({
+            from:    `Gigante Viagero <${process.env.EMAIL_FROM}>`,
+            to:      email,
+            subject: '🔐 Tu código de recuperación — Gigante Viagero',
+            html:    htmlContent
+        });
+
+        if (mailError) throw new Error(mailError.message);
+
         console.log(`📨 Código enviado a ${email}`);
         return res.json({ ok: true, message: 'Código enviado correctamente.' });
     } catch (err) {
-        console.error('Error nodemailer:', err);
+        console.error('Error Resend:', err);
         return res.status(500).json({ message: 'No se pudo enviar el correo. Intenta de nuevo.' });
     }
 });
@@ -340,10 +337,5 @@ router.post('/reset-password', async (req, res) => {
         return res.status(500).json({ message: 'Error al cambiar la contraseña. Intenta de nuevo.' });
     }
 });
-
-// =============================================
-// LOG DE RUTAS CONFIGURADAS
-// =============================================
-
 
 module.exports = router;
