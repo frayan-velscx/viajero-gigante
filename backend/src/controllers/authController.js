@@ -394,7 +394,140 @@ const updateProfile = async (req, res, next) => {
         next(error);
     }
 };
+// ============================================
+// MAPA TEMPORAL DE CÓDIGOS (en producción usa Redis o MongoDB)
+// ============================================
+const resetCodes = new Map(); 
+// formato: email → { code, expiresAt, attempts }
 
+// ============================================
+// FUNCIÓN 5: ENVIAR CÓDIGO DE RESET
+// POST /api/auth/send-reset-code
+// ============================================
+const sendResetCode = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ message: 'Email requerido' });
+
+        // Verificar que el usuario existe
+        const user = await User.findOne({ email: email.toLowerCase() });
+        // Respuesta genérica por seguridad (no revelar si existe)
+        if (!user) {
+            return res.status(200).json({ 
+                success: true, 
+                message: 'Si el correo existe, recibirás el código.' 
+            });
+        }
+
+        // Generar código de 6 dígitos
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutos
+
+        // Guardar en mapa
+        resetCodes.set(email.toLowerCase(), { code, expiresAt, attempts: 0 });
+        console.log(`🔑 Código generado para ${email}: ${code}`);
+
+        // Enviar correo
+        const { sendResetCode: sendEmail } = require('../services/emailService');
+        const result = await sendEmail(email, code);
+
+        if (!result.success) {
+            console.error('❌ Error enviando email:', result.error);
+            return res.status(500).json({ 
+                message: 'Error al enviar el correo. Intenta de nuevo.' 
+            });
+        }
+
+        res.status(200).json({ 
+            success: true, 
+            message: 'Código enviado correctamente.' 
+        });
+
+    } catch (error) {
+        console.error('❌ sendResetCode error:', error.message);
+        next(error);
+    }
+};
+
+// ============================================
+// FUNCIÓN 6: VERIFICAR CÓDIGO
+// POST /api/auth/verify-reset-code
+// ============================================
+const verifyResetCode = async (req, res, next) => {
+    try {
+        const { email, code } = req.body;
+        if (!email || !code) 
+            return res.status(400).json({ message: 'Email y código requeridos' });
+
+        const entry = resetCodes.get(email.toLowerCase());
+
+        if (!entry) 
+            return res.status(400).json({ valid: false, message: 'Código no encontrado o expirado.' });
+
+        if (Date.now() > entry.expiresAt) {
+            resetCodes.delete(email.toLowerCase());
+            return res.status(400).json({ valid: false, message: 'El código ha expirado. Solicita uno nuevo.' });
+        }
+
+        if (entry.attempts >= 5) 
+            return res.status(400).json({ valid: false, message: 'Demasiados intentos. Solicita un nuevo código.' });
+
+        if (entry.code !== code) {
+            entry.attempts++;
+            return res.status(400).json({ valid: false, message: 'Código incorrecto.' });
+        }
+
+        // Código correcto — marcar como verificado
+        entry.verified = true;
+        res.status(200).json({ valid: true, message: 'Código verificado.' });
+
+    } catch (error) {
+        console.error('❌ verifyResetCode error:', error.message);
+        next(error);
+    }
+};
+
+// ============================================
+// FUNCIÓN 7: CAMBIAR CONTRASEÑA
+// POST /api/auth/reset-password
+// ============================================
+const resetPassword = async (req, res, next) => {
+    try {
+        const { email, newPassword } = req.body;
+        if (!email || !newPassword) 
+            return res.status(400).json({ message: 'Email y nueva contraseña requeridos' });
+
+        const entry = resetCodes.get(email.toLowerCase());
+
+        if (!entry || !entry.verified) 
+            return res.status(400).json({ message: 'Debes verificar el código primero.' });
+
+        if (Date.now() > entry.expiresAt) {
+            resetCodes.delete(email.toLowerCase());
+            return res.status(400).json({ message: 'Sesión expirada. Inicia el proceso de nuevo.' });
+        }
+
+        if (newPassword.length < 8) 
+            return res.status(400).json({ message: 'La contraseña debe tener al menos 8 caracteres.' });
+
+        // Actualizar contraseña (el middleware de User la hasheará)
+        const user = await User.findOne({ email: email.toLowerCase() });
+        if (!user) return res.status(404).json({ message: 'Usuario no encontrado.' });
+
+        user.password = newPassword;
+        await user.save();
+
+        // Limpiar código usado
+        resetCodes.delete(email.toLowerCase());
+
+        console.log(`✅ Contraseña actualizada para: ${email}`);
+        res.status(200).json({ success: true, message: 'Contraseña actualizada exitosamente.' });
+
+    } catch (error) {
+        console.error('❌ resetPassword error:', error.message);
+        next(error);
+    }
+};
 // =============================================
 // EXPORTAR FUNCIONES
 // =============================================
@@ -405,4 +538,3 @@ module.exports = {
     getProfile,
     updateProfile
 };
-
