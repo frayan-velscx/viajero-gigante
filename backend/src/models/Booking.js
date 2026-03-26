@@ -78,12 +78,12 @@ const bookingSchema = new mongoose.Schema({
         phone: { type: String, required: true, trim: true }
     },
 
-    paymentMethod: {
-        type:     String,
-        required: [true, 'El método de pago es requerido'],
-        enum:     ['nequi'],
-        default:  'nequi'
-    },
+   paymentMethod: {
+    type:     String,
+    required: [true, 'El método de pago es requerido'],
+    enum:     ['nequi', 'bancolombia'],
+    default:  'nequi'
+},
 
     pricing: {
         basePrice:  { type: Number, required: true },
