@@ -237,17 +237,23 @@ exports.createBooking = async (req, res) => {
             }
         });
 
-        // 6. Emails en segundo plano
-        if (sendBookingEmails) {
-            const itinerary = generateItinerary(bookingData);
-            sendBookingEmails(bookingData, itinerary)
-                .then(r => {
-                    console.log(`📧 Emails → ${bookingData.personalInfo.email}`);
-                    console.log(`   Confirmación: ${r.confirmation?.success ? '✅' : '❌'}`);
-                    console.log(`   Itinerario:   ${r.itinerary?.success   ? '✅' : '❌'}`);
-                })
-                .catch(err => console.warn('⚠️ Error emails (reserva guardada):', err.message));
-        }
+       // 6. Emails en segundo plano
+console.log('🔍 sendBookingEmails disponible:', !!sendBookingEmails);
+
+if (sendBookingEmails) {
+    const itinerary = generateItinerary(bookingData);
+    console.log('📤 Intentando enviar email a:', bookingData.personalInfo.email);
+    
+    sendBookingEmails(bookingData, itinerary)
+        .then(r => {
+            console.log('📧 Resultado emails:', JSON.stringify(r));
+        })
+        .catch(err => {
+            console.error('❌ Error emails completo:', err);
+        });
+} else {
+    console.error('❌ emailService NO está cargado — revisa la importación');
+}
 
     } catch (error) {
         logger.error('❌ Error al crear reserva:', error);

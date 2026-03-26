@@ -1,25 +1,16 @@
-// =============================================
-// services/emailService.js  –  Gigante Viajero
-// =============================================
-
 const logger      = require('../config/logger');
-const { transporter } = require('../config/Nodemailer');
+const { resend }  = require('../config/Nodemailer');
 
 const fmt     = (n) => new Intl.NumberFormat('es-CO').format(Math.round(n || 0));
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '--';
 
-// =================================================================
-// FUNCIÓN PRINCIPAL — llamada desde BookingController
-// =================================================================
 exports.sendBookingEmails = async (bookingData, itinerary) => {
     try {
         const confirmationResult = await sendConfirmationEmail(bookingData);
         const itineraryResult    = itinerary?.length > 0
             ? await sendItineraryEmail(bookingData, itinerary)
             : { success: false, skipped: true };
-
         return { confirmation: confirmationResult, itinerary: itineraryResult };
-
     } catch (error) {
         logger.error('❌ Error en emailService:', error);
         return {
@@ -29,9 +20,6 @@ exports.sendBookingEmails = async (bookingData, itinerary) => {
     }
 };
 
-// =================================================================
-// EMAIL 1 — Confirmación de reserva
-// =================================================================
 async function sendConfirmationEmail(bookingData) {
     const {
         bookingCode, destination, checkIn, checkOut, nights,
@@ -67,25 +55,19 @@ async function sendConfirmationEmail(bookingData) {
 
         const html = `
         <div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
-
           <div style="background:linear-gradient(135deg,#195C33,#0d3d20);padding:40px 32px;text-align:center;border-radius:16px 16px 0 0;">
             <div style="font-size:52px;margin-bottom:12px;">✅</div>
             <h1 style="color:white;font-size:28px;font-weight:800;margin:0 0 8px;">¡Reserva Registrada!</h1>
             <p style="color:rgba(255,255,255,.85);font-size:15px;margin:0;">Gigante Viajero · Gigante, Huila</p>
           </div>
-
           <div style="padding:32px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 16px 16px;">
-
             <p style="font-size:16px;color:#374151;margin:0 0 24px;">
                 Hola <strong>${firstName}</strong>, tu reserva ha sido registrada exitosamente.
             </p>
-
             <div style="background:linear-gradient(135deg,#F4C400,#FFE347);padding:20px;border-radius:14px;text-align:center;margin-bottom:28px;">
               <p style="font-size:12px;color:#195C33;font-weight:700;margin:0 0 6px;text-transform:uppercase;letter-spacing:1.5px;">Código de Reserva</p>
               <p style="font-size:30px;font-weight:900;color:#195C33;font-family:monospace;letter-spacing:3px;margin:0;">${bookingCode}</p>
-              <p style="font-size:12px;color:#195C33;margin:8px 0 0;opacity:.8;">Guarda este código para gestionar tu reserva</p>
             </div>
-
             <h3 style="font-size:16px;font-weight:700;color:#195C33;margin:0 0 14px;">📋 Detalles de tu reserva</h3>
             <table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:28px;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
               <tr><td style="padding:12px;color:#6b7280;width:42%;">Destino</td><td style="padding:12px;font-weight:700;">${destination?.name || ''}</td></tr>
@@ -100,43 +82,32 @@ async function sendConfirmationEmail(bookingData) {
                 <td style="padding:14px 12px;font-size:22px;font-weight:900;color:#195C33;">$${fmt(pricing?.total)} COP</td>
               </tr>
             </table>
-
-            <div style="background:#f9fafb;border-radius:12px;padding:16px;margin-bottom:24px;font-size:13px;">
-              <p style="font-weight:700;color:#374151;margin:0 0 10px;">💳 Desglose de precios</p>
-              <div style="display:flex;justify-content:space-between;padding:5px 0;color:#6b7280;"><span>Subtotal</span><span>$${fmt(pricing?.subtotal)} COP</span></div>
-              <div style="display:flex;justify-content:space-between;padding:5px 0;color:#6b7280;"><span>Tarifa de servicio (${pricing?.serviceFeePercentage || 5}%)</span><span>$${fmt(pricing?.serviceFee)} COP</span></div>
-              <div style="display:flex;justify-content:space-between;padding:5px 0;color:#6b7280;"><span>Impuestos (${pricing?.taxPercentage || 19}%)</span><span>$${fmt(pricing?.tax)} COP</span></div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0 0;font-weight:800;color:#195C33;font-size:15px;border-top:1px solid #e5e7eb;margin-top:5px;">
-                <span>Total</span><span>$${fmt(pricing?.total)} COP</span>
-              </div>
-            </div>
-
             ${nequiBlock}
-
             <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:16px;font-size:13px;color:#92400e;line-height:1.7;margin-bottom:24px;">
               ⚠️ <strong>Estado: Pendiente de pago</strong><br>
-              Tu reserva quedará confirmada una vez que el sitio verifique tu transferencia Nequi.
+              Tu reserva quedará confirmada una vez que el sitio verifique tu transferencia.
             </div>
-
             <div style="border-top:2px solid #f3f4f6;padding-top:20px;text-align:center;">
               <p style="font-size:13px;color:#6b7280;margin:0 0 6px;">
                 ¿Tienes dudas? Escríbenos a
                 <a href="mailto:${process.env.EMAIL_FROM}" style="color:#195C33;font-weight:600;">${process.env.EMAIL_FROM}</a>
               </p>
-              <p style="font-size:12px;color:#9ca3af;margin:0;">
-                © 2025 Gigante Viajero · Gigante, Huila<br>
-                Este correo fue generado automáticamente.
-              </p>
+              <p style="font-size:12px;color:#9ca3af;margin:0;">© 2025 Gigante Viajero · Gigante, Huila</p>
             </div>
           </div>
         </div>`;
 
-        await transporter.sendMail({
-            from:    `"Gigante Viajero" <${process.env.EMAIL_FROM}>`,
-            to:      personalInfo.email,
+        const { error } = await resend.emails.send({
+            from:    `Gigante Viajero <${process.env.EMAIL_FROM}>`,
+            to:      [personalInfo.email],
             subject: `✅ Reserva ${bookingCode} — ${destination?.name} | Gigante Viajero`,
             html
         });
+
+        if (error) {
+            logger.error('❌ Resend error confirmación:', error);
+            return { success: false, error: error.message };
+        }
 
         logger.info('📧 Confirmación enviada', { to: personalInfo.email, bookingCode });
         console.log(`📧 Confirmación enviada a: ${personalInfo.email}`);
@@ -144,14 +115,10 @@ async function sendConfirmationEmail(bookingData) {
 
     } catch (error) {
         logger.error('❌ Error enviando confirmación:', error);
-        console.error('❌ Error detalle:', error.message);
         return { success: false, error: error.message };
     }
 }
 
-// =================================================================
-// EMAIL 2 — Itinerario del viaje
-// =================================================================
 async function sendItineraryEmail(bookingData, itinerary) {
     const { bookingCode, destination, checkIn, personalInfo } = bookingData;
 
@@ -166,14 +133,9 @@ async function sendItineraryEmail(bookingData, itinerary) {
               <div style="padding:16px;">
                 ${day.activities.map(a => `
                   <div style="display:flex;gap:14px;padding:10px 0;border-bottom:1px solid #f3f4f6;">
-                    <span style="font-size:12px;font-weight:700;color:#195C33;min-width:72px;padding-top:2px;">${a.time}</span>
+                    <span style="font-size:12px;font-weight:700;color:#195C33;min-width:72px;">${a.time}</span>
                     <span style="font-size:13px;color:#374151;">${a.description}</span>
                   </div>`).join('')}
-                <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
-                  ${day.meals?.breakfast ? '<span style="background:#dcfce7;color:#166534;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;">🍳 Desayuno</span>' : ''}
-                  ${day.meals?.lunch     ? '<span style="background:#dbeafe;color:#1e40af;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;">🍽️ Almuerzo</span>'  : ''}
-                  ${day.meals?.dinner    ? '<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;">🌙 Cena</span>'        : ''}
-                </div>
               </div>
             </div>`).join('');
 
@@ -185,28 +147,25 @@ async function sendItineraryEmail(bookingData, itinerary) {
             <p style="color:rgba(255,255,255,.85);font-size:14px;margin:0;">Reserva ${bookingCode} · ${fmtDate(checkIn)}</p>
           </div>
           <div style="padding:32px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 16px 16px;">
-            <p style="font-size:15px;color:#374151;margin:0 0 24px;">
-                Hola <strong>${firstName}</strong>, aquí tienes tu itinerario sugerido.
-            </p>
+            <p style="font-size:15px;color:#374151;margin:0 0 24px;">Hola <strong>${firstName}</strong>, aquí tienes tu itinerario sugerido.</p>
             ${daysHtml}
-            <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:14px;font-size:13px;color:#166534;margin-top:8px;">
-              💡 <strong>Consejo:</strong> Las actividades son sugerencias. Consulta al sitio para adaptar el itinerario.
-            </div>
-            <p style="text-align:center;font-size:12px;color:#9ca3af;margin-top:24px;border-top:1px solid #f3f4f6;padding-top:16px;">
-              © 2025 Gigante Viajero · Gigante, Huila
-            </p>
+            <p style="text-align:center;font-size:12px;color:#9ca3af;margin-top:24px;">© 2025 Gigante Viajero · Gigante, Huila</p>
           </div>
         </div>`;
 
-        await transporter.sendMail({
-            from:    `"Gigante Viajero" <${process.env.EMAIL_FROM}>`,
-            to:      personalInfo.email,
+        const { error } = await resend.emails.send({
+            from:    `Gigante Viajero <${process.env.EMAIL_FROM}>`,
+            to:      [personalInfo.email],
             subject: `🗺️ Tu itinerario para ${destination?.name} — ${bookingCode}`,
             html
         });
 
+        if (error) {
+            logger.error('❌ Resend error itinerario:', error);
+            return { success: false, error: error.message };
+        }
+
         logger.info('📧 Itinerario enviado', { to: personalInfo.email, bookingCode });
-        console.log(`📧 Itinerario enviado a: ${personalInfo.email}`);
         return { success: true };
 
     } catch (error) {
